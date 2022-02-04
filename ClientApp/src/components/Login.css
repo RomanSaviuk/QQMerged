@@ -1,0 +1,151 @@
+﻿
+
+.flexbox {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+    gap: 15px;
+}
+
+.flexboxvert {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+
+}
+
+.item {
+}
+
+.iteminput {
+    border: 10px solid white;
+    border-radius: 20px;
+    min-width: 450px;
+    min-height: 45px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.flexboxvert1 {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 15px;
+}
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 17px;
+    text-transform: none;
+    line-height: 51.46px;
+    text-align: center;
+    font-family: ' Ropa Sans';
+    font-weight: 400;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    background: none;
+    cursor: pointer;
+    padding: 25px 80px;
+    margin-left: 300px;
+    outline: none;
+    position: relative;
+}
+
+ .btn:after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+
+    .btn:before {
+        font-family: ' Ropa Sans';
+        speak: none;
+        font-style: normal;
+        font-weight: 400;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        position: relative;
+    }
+
+
+.btn-sep {
+    padding: 2px 50px 2px 50px;
+}
+
+    .btn-sep:before {
+        background: rgba(0,0,0,0.15);
+    }
+
+
+.btn-1 {
+    background: #EDB734;
+    color: white;
+}
+
+    .btn-1:hover {
+        background: #fbc02d;
+        color: white;
+    }
+
+    .btn-1:active {
+        background: #FBC02D;
+        top: 2px;
+    }
+
+    .btn-1:before {
+        position: absolute;
+        height: 100%;
+        left: 0;
+        top: 0;
+        line-height: 3;
+        font-size: 100%;
+        width: 40px;
+        
+    }
+
+.btn2 {
+    border: none;
+    background-color: inherit;
+    margin-left: 300px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Ropa Sans;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 25.73px
+}
+    .btn2:hover {
+        background: transparent;
+    }
+
+.forgotpass1 {
+    color: #555555;
+}
+
+.register {
+    color: #555555;
+}
+
+
+.flexboxvert2 {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 15px;
+    background-color:pink;
+}
