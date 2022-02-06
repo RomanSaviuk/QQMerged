@@ -12,9 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 
-/// <summary>
-/// 
-/// </summary>
+
 namespace QuiQue
 {
     public class Startup

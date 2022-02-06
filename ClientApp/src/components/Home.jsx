@@ -25,6 +25,7 @@ export class Home extends Component {
     render() {
         return (
             <Container fluid>
+                <div className="home_background"></div>
                 <Row>
                     <Col sm="6">
                         <div className="input_id_block">

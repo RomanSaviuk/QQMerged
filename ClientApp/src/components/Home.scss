@@ -76,3 +76,14 @@ body {
 h1, .h1 {
     font-size: 4em;
 }
+
+.home_background {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 45%;
+    height: 88%;
+    background-color: white;
+    border-radius: 0% 50% 50% 0%;
+    box-shadow: inset 0px 4px 4px rgb(0 0 0 / 25%);
+}
