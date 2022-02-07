@@ -8,6 +8,7 @@ import { About } from './components/About';
 import { Account } from './components/Account.jsx';
 import { Login } from './components/Login';
 import { ForgotPass } from './components/ForgotPass';
+import { GeneralQueue } from './components/GeneralQueue';
 
 import './custom.css'
 
@@ -24,6 +25,7 @@ export default class App extends Component {
         <Route path='/account' component={Account} />
         <Route path='/login' component={Login} />
         <Route path='/forgotpass' component={ForgotPass} />
+        <Route path='/queue' component={GeneralQueue} />
       </Layout>
     );
   }

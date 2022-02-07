@@ -20,6 +20,7 @@ export class Home extends Component {
     handleSubmit(event) {
         alert('An id was submitted: ' + this.state.idQ);
         event.preventDefault();
+        window.open("/queue", "_self");
     }
 
     render() {
