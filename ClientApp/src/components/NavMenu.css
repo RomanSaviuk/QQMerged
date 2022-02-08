@@ -43,7 +43,8 @@ body {
 .nav-link:hover{color: white;}
 
 .navbar-toggler-icon {
-    background-image: url("/toggler-icon.png");
+    background-image: url("/public/toggler-icon.png");
+    /*background-color:aquamarine;*/
 }
 
 .navbar-toggler, {

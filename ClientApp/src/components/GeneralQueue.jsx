@@ -1,6 +1,10 @@
 ﻿import React, { Component } from 'react';
 import { Container, Row, Col} from 'reactstrap';
+import { Virtuoso } from 'react-virtuoso';
+import CustomScrollbar from "./CustomScroller";
+import "overlayscrollbars/css/OverlayScrollbars.css";
 import './GeneralQueue.scss';
+
 
 export class GeneralQueue extends Component {
     static displayName = GeneralQueue.name;
@@ -20,57 +24,51 @@ export class GeneralQueue extends Component {
         this.setState({ queue: data, loading: false });
     }
 
-    static renderQueueTable(queue) {
-        return (
-            <table className='table' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {queue.map(queue => <tr key={queue.name}> <td>{queue.name}</td> </tr>)}
-                </tbody>
-            </table>
-        );
+    alert(event) {
+        alert('Button clicked');
     }
 
-
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : GeneralQueue.renderQueueTable(this.state.queue);
-        let qname = "Queue"
-        let qdesc = "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
-        let qsize = 15
+        let queue = this.state.queue
+        let qname = "Queue name with very long description"
+        let qsize = this.state.queue.length
+
         return (
             <Container fluid>
                 <div className="main_block">
-                    {/*{contents}*/}
                     <Row>
                         <div className="queue_name">
+                            {qname}
+                            <div className="queue_edit_button" onClick={this.alert}>
+                            </div>
                         </div>
                     </Row>
 
                     <Row className="queue_block">
                         <Col sm="8">
                             <div className="queue">
+                                <Virtuoso
+                                    components={{Scroller: CustomScrollbar}}
+                                    className="QList"
+                                    data={queue}
+                                    itemContent={(index, QueueTest) => <div className="QItem">{QueueTest.name}</div>}
+                                />
                             </div>
                         </Col>
 
                         <Col sm="4">
                             <Row className="buttons">
                                 <Col sm="6" className="button">
-                                    <div className="next_button">NEXT</div>
+                                    <div className="next_button" onClick={this.alert}>NEXT</div>
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue">{qsize}</div>
+                                    <div className="ppl_inqueue" onClick={this.alert}>{qsize}</div>
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue"></div>
+                                    <div className="ppl_inqueue" onClick={this.alert}></div>
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue"></div>
+                                    <div className="ppl_inqueue" onClick={this.alert}></div>
                                 </Col>
                             </Row>
                         </Col>

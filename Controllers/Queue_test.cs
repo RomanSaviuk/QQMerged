@@ -21,9 +21,9 @@ namespace QuiQue.Controllers
         [HttpGet]
         public IEnumerable<QueueTest> Get()
         {
-            return Enumerable.Range(1, 10).Select(index => new QueueTest
+            return Enumerable.Range(1, 30).Select(index => new QueueTest
             {
-                Name = "User" + index.ToString()
+                name = "User Name " + index.ToString()
             })
             .ToArray();
         }

@@ -39,7 +39,7 @@ export class NavMenu extends Component {
                             </Col>
 
                             <Col xs="9">
-                                <NavbarToggler onClick={this.toggleNavbar} className="toggler_margin" />
+                                <NavbarToggler style={{}} onClick={this.toggleNavbar} className="toggler_margin" />
                                 <Collapse className="navbar-nav" isOpen={!this.state.collapsed} navbar>
                                     <Col xs="8">
                                         <ul className="navbar-nav">

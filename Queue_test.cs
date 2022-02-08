@@ -4,6 +4,6 @@ namespace QuiQue
 {
     public class QueueTest
     {
-        public string Name { get; set; }
+        public string name { get; set; }
     }
 }
