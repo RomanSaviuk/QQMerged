@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import './CreateQueue.css';
+import './EditQueue.css';
 
-export class CreateQueue extends Component {
-    static displayName = CreateQueue.name;
+export class EditQueue extends Component {
+    static displayName = EditQueue.name;
 
     render() {
         return (
@@ -22,7 +22,7 @@ export class CreateQueue extends Component {
                 </div>
                 <div>
                     <form action="">
-                        <input class="formbutton" type="submit" value="Create queue" />
+                        <input class="formbutton" type="submit" value="Edit queue" />
                     </form>
                 </div>
 

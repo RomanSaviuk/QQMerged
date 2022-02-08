@@ -10,6 +10,7 @@ import { Account } from './components/Account.jsx';
 import { Login } from './components/Login';
 import { ForgotPass } from './components/ForgotPass';
 import { GeneralQueue } from './components/GeneralQueue';
+import { EditQueue } from './components/EditQueue';
 
 import QueueList from './components/GeneralQueue';
 
@@ -26,6 +27,7 @@ export default class App extends Component {
         <Route path='/myqueues' component={MyQueues} />
         <Route path='/about' component={About} />
         <Route path='/account' component={Account} />
+        <Route path='/editqueue' component={EditQueue} />
         <Route path='/login' component={Login} />
         <Route path='/forgotpass' component={ForgotPass} />
         <Route path='/queue' component={GeneralQueue} />
