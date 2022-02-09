@@ -6,7 +6,7 @@ import "overlayscrollbars/css/OverlayScrollbars.css";
 import './GeneralQueue.scss';
 
 
-export default class GeneralQueue extends Component {
+export class GeneralQueue extends Component {
     static displayName = GeneralQueue.name;
 
     constructor(props) {
