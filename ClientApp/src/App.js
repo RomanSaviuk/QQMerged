@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
-
+import { Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home.jsx';
 import { CreateQueue } from './components/CreateQueue';
@@ -11,8 +10,6 @@ import { Login } from './components/Login';
 import { ForgotPass } from './components/ForgotPass';
 import { GeneralQueue } from './components/GeneralQueue';
 import { EditQueue } from './components/EditQueue';
-
-import QueueList from './components/GeneralQueue';
 
 import './custom.css'
 
@@ -31,8 +28,6 @@ export default class App extends Component {
         <Route path='/login' component={Login} />
         <Route path='/forgotpass' component={ForgotPass} />
         <Route path='/queue' component={GeneralQueue} />
-
-        <Route path='/queuet' component={QueueList} />
       </Layout>
     );
   }
