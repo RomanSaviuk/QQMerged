@@ -11,15 +11,22 @@ export class GeneralQueue extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { qname: "", queue: [], qstate: true, qdesc: "", loading: true};
+        this.state = { qname: "", queue: [], qstate: true, qdesc: "", loading: true, id: 0};
     }
 
     componentDidMount() {
+        this.setState({ id: this.props.match.params.id });
         this.qupdate();
     }
 
     async qupdate() {
-        const response = await fetch('getqueuetest');
+        const token = "Bearer " + sessionStorage.getItem('token');
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Authorization': token }
+        };
+
+        const response = await fetch(`get_queue/${this.props.match.params.id}`, requestOptions);
         const data = await response.json();
         this.setState({ queue: data, loading: false });
     }
@@ -32,13 +39,14 @@ export class GeneralQueue extends Component {
         let queue = this.state.queue
         let qname = "Queue name with very long description"
         let qsize = this.state.queue.length
+        let qid = this.state.id
 
         return (
             <Container fluid>
                 <div className="main_block">
                     <Row>
                         <div className="queue_name">
-                            {qname}
+                            {qname} {qid}
                             <div className="queue_edit_button" onClick={this.alert}>
                             </div>
                         </div>
@@ -51,7 +59,7 @@ export class GeneralQueue extends Component {
                                     components={{Scroller: CustomScrollbar}}
                                     className="QList"
                                     data={queue}
-                                    itemContent={(index, QueueTest) => <div className="QItem">{QueueTest.name}</div>}
+                                    itemContent={(index, Queue) => <div className="QItem">{Queue.idUser}</div>}
                                 />
                             </div>
                         </Col>

@@ -12,7 +12,7 @@ namespace QuiQue.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("/queue/{queueId}/system")]
+    [Route("/queues/{queueId}/system")]
     public class SystemUserController : ControllerBase
     {
         private readonly ILogger<SystemUserController> _logger;
@@ -27,7 +27,7 @@ namespace QuiQue.Controllers
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
         }
-        [Route("[controller]/get_queue")]
+        [Route("/get_queue/{queueId}")]
         [HttpGet]
         public IActionResult QueueGetUpdate([FromRoute] int queueId)
         {

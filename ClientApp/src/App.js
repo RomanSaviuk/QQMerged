@@ -27,7 +27,7 @@ export default class App extends Component {
         <Route path='/editqueue' component={EditQueue} />
         <Route path='/login' component={Login} />
         <Route path='/forgotpass' component={ForgotPass} />
-        <Route path='/queue' component={GeneralQueue} />
+        <Route path='/queue/:id' component={GeneralQueue} />
       </Layout>
     );
   }

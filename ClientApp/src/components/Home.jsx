@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Container, Row, Col, Input} from 'reactstrap';
 import './Home.scss';
+import {Link} from "react-router-dom";
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -18,12 +19,14 @@ export class Home extends Component {
     }
 
     handleSubmit(event) {
-        alert('An id was submitted: ' + this.state.idQ);
+        /*alert('An id was submitted: ' + this.state.idQ);*/
         event.preventDefault();
         window.open("/queue", "_self");
     }
 
     render() {
+        let id = this.state.idQ
+
         return (
             <Container fluid>
                 <div className="home_background"></div>
@@ -37,7 +40,8 @@ export class Home extends Component {
                             </div>
 
                             <div className="submit_button">
-                                <Input style={{color:"white"}} type="submit" value="Join" onClick={this.handleSubmit} />
+                                <Link to={`queue/${id}`}>Join</Link>
+                                {/*<Input href="/queue/" style={{color:"white"}} type="submit" value="Join" */}{/*onClick={this.handleSubmit}*/}{/* />*/}
                             </div>
                         </div>
                     </Col>
