@@ -45,7 +45,7 @@ export class Login extends Component {
               <div class="flexboxvert">
                   <div className="input_email">
                     <Input type="text" className="iteminput" placeholder ="E-mail" value={this.state.email} onChange={this.handleEmailChange} />
-                  </form>
+                  </div>
                   <form class="item" action="">
                     <Input type="text" className="iteminput" placeholder ="Password" value={this.state.password} onChange={this.handlePasswordChange} />
                     {/*<input type="text" class="iteminput "placeholder = "Password" />*/}
