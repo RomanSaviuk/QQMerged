@@ -49,6 +49,9 @@ body {
     height: 45px;
     text-align: center;
     padding: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .input_id_block {
@@ -86,4 +89,10 @@ h1, .h1 {
     background-color: white;
     border-radius: 0% 50% 50% 0%;
     box-shadow: inset 0px 4px 4px rgb(0 0 0 / 25%);
+}
+
+a, a:hover {
+    color: #4C4C4C;
+    text-decoration: none;
+    background-color: transparent;
 }

@@ -26,13 +26,15 @@ export class Login extends Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email: this.state.email, password: this.state.password}) 
-            /*body: JSON.stringify({email: "qqq12", password: "12312"})*/ 
+            /*body: JSON.stringify({email: this.state.email, password: this.state.password}) */
+            body: JSON.stringify({email: "qqq12", password: "12312"}) 
         };
 
         const response = await fetch('/login', requestOptions)
         const data = await response.text();
         sessionStorage.setItem('token', data);
+
+        sessionStorage.setItem('email', this.state.email);
         window.open("/", "_self");
     }
 
@@ -41,7 +43,7 @@ export class Login extends Component {
             
             <div class = "flexbox">
               <div class="flexboxvert">
-                  <form class="item" action="">
+                  <div className="input_email">
                     <Input type="text" className="iteminput" placeholder ="E-mail" value={this.state.email} onChange={this.handleEmailChange} />
                   </form>
                   <form class="item" action="">

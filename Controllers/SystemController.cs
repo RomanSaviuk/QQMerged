@@ -189,5 +189,20 @@ namespace QuiQue.Controllers
                     return BadRequest("Default Error");
             }
         }
+
+        //////////////////////////////////////
+        [Authorize]
+        [Route("/get_my_id")]
+        [HttpGet]
+        public IActionResult IS()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
+
     }
 }
