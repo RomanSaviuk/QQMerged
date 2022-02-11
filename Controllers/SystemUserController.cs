@@ -7,6 +7,7 @@ using System.Linq;
 using QuiQue.Models;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using QuiQue.Models.View;
 
 namespace QuiQue.Controllers
 {
@@ -32,6 +33,15 @@ namespace QuiQue.Controllers
         public IActionResult QueueGetUpdate([FromRoute] int queueId)
         {
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
+            // convert to view 
+            List<QueueModel> queueModels = queue.Select(q => new QueueModel {
+                User = q.User.Email,
+                idUser = q.idUser,
+                EventId = q.EventId,
+                Time_queue = q.Time_queue,
+                Status = q.Status,
+                Number = q.Number
+            }).ToList();
             return new OkObjectResult(queue);
         }
 
