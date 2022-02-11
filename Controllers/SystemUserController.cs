@@ -35,7 +35,7 @@ namespace QuiQue.Controllers
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel {
-                User = q.User.Email,
+                User = _context.Users.FirstOrDefault(u => u.idUser== q.idUser).Username,
                 idUser = q.idUser,
                 EventId = q.EventId,
                 Time_queue = q.Time_queue,

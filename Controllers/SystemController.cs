@@ -68,6 +68,45 @@ namespace QuiQue.Controllers
             _context.SaveChanges();
             return new OkObjectResult(queue);
         }
+        [Authorize]
+        [Route("/IOwner/{idEvent}")]
+        [HttpGet]
+        public IActionResult IOwner([FromRoute] Int64 idEvent)
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
+            if (Event == null)
+                return NotFound();
+
+            if (Event.OwnerId == Userid)
+                return Ok("YES");
+            else
+                return Ok("NO");
+        }
+        [Authorize]
+        [Route("/system/get_my_id")]
+        [HttpGet]
+        public IActionResult Auth()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            // Чи в токені лежить id модератора
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
+        [Authorize]
+        [Route("/queue/system/auth")]
+        [HttpGet]
+        public IActionResult IS()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            // Чи в токені лежить id модератора
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
 
         [Authorize]
         [Route("/queue/{idEvent}/moder/system/update/")]

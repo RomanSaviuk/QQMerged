@@ -33,14 +33,12 @@ namespace QuiQue.Controllers
             _JWTAuthenticationManager = jWTAuthenticationManager;
         }
 
-        [Authorize]
-        [Route("/123")]
+        [Route("[controller]/add_date")]
         [HttpGet]
         public IActionResult Get()
         {
-            var userId = User.FindFirst(ClaimTypes.Email).Value;
-            //List<User> user = _context.Users.Where(c => c.idUser > 7).ToList();
-            return new OkObjectResult(userId);
+            Date();
+            return Ok("I add your date");
         }
 
         [Authorize]
@@ -82,6 +80,52 @@ namespace QuiQue.Controllers
             _context.Add(event1);
             _context.SaveChanges();
             return new OkObjectResult(event1);
+        }
+
+
+
+        private void Date()
+        {
+            int usernumber = 1;
+            User user1 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            usernumber++;
+            User user2 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            usernumber++;
+            User user3 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            usernumber++;
+            User user4 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            usernumber++;
+            User user5 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            usernumber++;
+            User user6 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
+            _context.Add(user1);
+            _context.Add(user2);
+            _context.Add(user3);
+            _context.Add(user4);
+            _context.Add(user5);
+            _context.Add(user6);
+            _context.SaveChanges();
+
+            Event Event1 = new Event { OwnerId = user5.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
+            Event Event2 = new Event { OwnerId = user6.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
+            _context.Add(Event1);
+            _context.Add(Event2);
+            _context.SaveChanges();
+
+            usernumber = 1;
+            Queue queue1 = new Queue { EventId = Event1.EventId, idUser = user1.idUser, Number = usernumber, Status = "in queue", Time_queue = System.DateTime.Now };
+            usernumber++;
+            Queue queue2 = new Queue { EventId = Event1.EventId, idUser = user2.idUser, Number = usernumber, Status = "in queue", Time_queue = System.DateTime.Now };
+            usernumber++;
+            Queue queue3 = new Queue { EventId = Event1.EventId, idUser = user3.idUser, Number = usernumber, Status = "in queue", Time_queue = System.DateTime.Now };
+            usernumber++;
+            Queue queue4 = new Queue { EventId = Event1.EventId, idUser = user4.idUser, Number = usernumber, Status = "in queue", Time_queue = System.DateTime.Now };
+            _context.Add(queue1);
+            _context.Add(queue2);
+            _context.Add(queue3);
+            _context.Add(queue4);
+            _context.SaveChanges();
+
         }
     }
 }
