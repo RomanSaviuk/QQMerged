@@ -11,7 +11,7 @@ namespace QuiQue.Models.View
 {
     public class  QueueModel
     {
-        public String User { get; set; }
+        public string User { get; set; }
         public Int64 idUser { get; set; }
         public Int64 EventId { get; set; }
         public DateTime Time_queue { get; set; }

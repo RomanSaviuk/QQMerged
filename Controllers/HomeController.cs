@@ -109,13 +109,12 @@ namespace QuiQue.Controllers
             User user5 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
             usernumber++;
             User user6 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
-            _context.Add(user1);
-            _context.Add(user2);
-            _context.Add(user3);
-            _context.Add(user4);
-            _context.Add(user5);
-            _context.Add(user6);
-            _context.SaveChanges();
+            _JWTAuthenticationManager.Registration(user1);
+            _JWTAuthenticationManager.Registration(user2);
+            _JWTAuthenticationManager.Registration(user3);
+            _JWTAuthenticationManager.Registration(user4);
+            _JWTAuthenticationManager.Registration(user5);
+            _JWTAuthenticationManager.Registration(user6);
 
             Event Event1 = new Event { OwnerId = user5.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
             Event Event2 = new Event { OwnerId = user6.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };

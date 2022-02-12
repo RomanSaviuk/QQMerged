@@ -59,7 +59,6 @@ namespace QuiQue.Controllers
             try
             {
                 _context.Remove(queue);
-                return new OkObjectResult(queue);
             }
             catch
             {
@@ -71,10 +70,10 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/IOwner/{idEvent}")]
         [HttpGet]
-        public IActionResult IOwner([FromRoute] Int64 idEvent)
+        public async Task<IActionResult> IOwner([FromRoute] Int64 idEvent)
         {
             Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
+            Event Event = await _context.Events.FirstOrDefaultAsync(e => e.EventId == idEvent);
             if (Event == null)
                 return NotFound();
 
@@ -86,10 +85,10 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/system/get_my_id")]
         [HttpGet]
-        public IActionResult Auth()
+        public async Task<IActionResult> Auth()
         {
             Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            User ISuser = await _context.Users.FirstOrDefaultAsync(c => c.idUser == Userid);
             // Чи в токені лежить id модератора
             if (ISuser == null)
                 return NotFound();
@@ -98,10 +97,10 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/queue/system/auth")]
         [HttpGet]
-        public IActionResult IS()
+        public async Task<IActionResult> IS()
         {
             Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            User ISuser = await _context.Users.FirstOrDefaultAsync(c => c.idUser == Userid);
             // Чи в токені лежить id модератора
             if (ISuser == null)
                 return NotFound();

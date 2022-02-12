@@ -30,9 +30,9 @@ namespace QuiQue.Controllers
         }
 
         [HttpPost("/Login")]
-        public IActionResult Authenticate([FromBody] UserCredentials userCred)
+        public async Task<IActionResult> Authenticate([FromBody] UserCredentials userCred)
         {
-            var token = _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
+            var token = await _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
 
             if (token == null)
                 return Unauthorized();
@@ -41,9 +41,9 @@ namespace QuiQue.Controllers
         }
 
         [HttpPost("/Register")]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(User user)
         {
-            bool registration_result = _JWTAuthenticationManager.Registration(user);
+            bool registration_result = await _JWTAuthenticationManager.Registration(user);
             if (!registration_result) // пошта зайнята іншим користувачем?
             {
                 return new ConflictObjectResult("Email is already taken!");
