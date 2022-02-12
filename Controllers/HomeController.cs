@@ -82,6 +82,17 @@ namespace QuiQue.Controllers
             return new OkObjectResult(event1);
         }
 
+        [Route("/event/{idEvent}")]
+        [HttpGet]
+        public IActionResult GetEvent([FromRoute] Int64 idEvent)
+        {
+            Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
+            if (Event == null)
+            {
+                return NoContent();
+            }
+            return new OkObjectResult(Event);
+        }
 
 
         private void Date()
