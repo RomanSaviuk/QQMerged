@@ -10,8 +10,8 @@ using QuiQue;
 namespace QuiQue.Migrations
 {
     [DbContext(typeof(QuickQueueContext))]
-    [Migration("20220211152217_new_start1")]
-    partial class new_start1
+    [Migration("20220212184158_allTables")]
+    partial class allTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -12,10 +12,12 @@ using QuiQue;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Threading;
 
 namespace QuiQue.Controllers
 
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class HomeController : ControllerBase
@@ -32,7 +34,7 @@ namespace QuiQue.Controllers
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
         }
-
+        [AllowAnonymous]
         [Route("[controller]/add_date")]
         [HttpGet]
         public IActionResult Get()
@@ -41,25 +43,12 @@ namespace QuiQue.Controllers
             return Ok("I add your date");
         }
 
-        [Authorize]
-        [Route("/1234")]
+        [Route("/my_account")]
         [HttpGet]
-        public IActionResult GetAgain()
+        public IActionResult GetUser()
         {
-            var userId = User.FindFirst(ClaimTypes.Email).Value;
-            List<Queue> queue = _context.Queues.Where(c => c.EventId == 3).ToList();
-            List<User> users = new List<User>();
-            foreach (Queue i in queue)
-            {
-                User user = _context.Users.First(c => c.idUser == i.idUser);
-                users.Add(user);
-            }
-            return new OkObjectResult(users);
-        }
-
-        [HttpPut]
-        public IActionResult PutUser(User user)
-        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User user = _context.Users.FirstOrDefault(e => e.idUser == idUser);
             return new OkObjectResult(user);
         }
 
@@ -82,6 +71,7 @@ namespace QuiQue.Controllers
             return new OkObjectResult(event1);
         }
 
+        // отримати інформацію про івент за ID
         [Route("/event/{idEvent}")]
         [HttpGet]
         public IActionResult GetEvent([FromRoute] Int64 idEvent)
@@ -109,15 +99,24 @@ namespace QuiQue.Controllers
             User user5 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
             usernumber++;
             User user6 = new User { Username = "string", Email = $"string{usernumber}", Password = "string", PhoneNumber = "0000111" };
-            _JWTAuthenticationManager.Registration(user1);
-            _JWTAuthenticationManager.Registration(user2);
-            _JWTAuthenticationManager.Registration(user3);
-            _JWTAuthenticationManager.Registration(user4);
-            _JWTAuthenticationManager.Registration(user5);
-            _JWTAuthenticationManager.Registration(user6);
+            int salt = 12;
+            user1.Password = BCrypt.Net.BCrypt.HashPassword(user1.Password, salt);
+            user2.Password = BCrypt.Net.BCrypt.HashPassword(user2.Password, salt);
+            user3.Password = BCrypt.Net.BCrypt.HashPassword(user3.Password, salt);
+            user4.Password = BCrypt.Net.BCrypt.HashPassword(user4.Password, salt);
+            user5.Password = BCrypt.Net.BCrypt.HashPassword(user5.Password, salt);
+            user6.Password = BCrypt.Net.BCrypt.HashPassword(user6.Password, salt);
+            _context.Add(user1);
+            _context.Add(user2);
+            _context.Add(user3);
+            _context.Add(user4);
+            _context.Add(user5);
+            _context.Add(user6);
+            _context.SaveChanges();
+            //Thread.Sleep(2000);
 
-            Event Event1 = new Event { OwnerId = user5.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
-            Event Event2 = new Event { OwnerId = user6.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
+            Event Event1 = new Event { OwnerId = user1.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
+            Event Event2 = new Event { OwnerId = user1.idUser, Title = "string", isFastQueue = true, IsSuspended = false, Description = "string", WaitingTimer = "string" };
             _context.Add(Event1);
             _context.Add(Event2);
             _context.SaveChanges();
@@ -135,7 +134,6 @@ namespace QuiQue.Controllers
             _context.Add(queue3);
             _context.Add(queue4);
             _context.SaveChanges();
-
         }
     }
 }

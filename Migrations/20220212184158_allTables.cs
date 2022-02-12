@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace QuiQue.Migrations
 {
-    public partial class new_start1 : Migration
+    public partial class allTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
