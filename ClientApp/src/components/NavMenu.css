@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+﻿﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
 body {
     background-color: #83E4C1;
@@ -11,7 +11,7 @@ body {
     align-items: center;
 }
 
-.navbar .container-fluid{
+.navbar .container-fluid {
     justify-content: space-around;
 }
 
@@ -19,9 +19,10 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    justify-content: space-around !important;
 }
 
-.container-fluid{
+.container-fluid {
     padding-right: 0px;
     padding-left: 0px;
 }
@@ -30,21 +31,22 @@ body {
     width: 100%;
 }
 
-.navbar-brand img{
+.navbar-brand img {
     height: 60px;
 }
 
 .nav-link {
     color: white;
-    width: 200px;
+    width: 170px;
     font-size: 20px;
 }
 
-.nav-link:hover{color: white;}
+.nav-link:hover {
+    color: white;
+}
 
 .navbar-toggler-icon {
     background-image: url("/public/toggler-icon.png");
-    /*background-color:aquamarine;*/
 }
 
 .navbar-toggler, {
@@ -81,5 +83,9 @@ button:focus, button:focus-visible {
 }
 
 .adaptive_width {
-    width: fit-content;
+    width: fit-content !important;
+}
+
+.justify_end {
+    justify-content: end !important;
 }

@@ -9,10 +9,10 @@ const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
 ReactDOM.render(
-  <Router basename={baseUrl}>
-    <App />
-  </Router>,
-  rootElement);
+    <Router basename={baseUrl}>
+        <App />
+    </Router>,
+    rootElement);
 
 registerServiceWorker();
 

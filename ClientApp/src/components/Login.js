@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Container, Row, Col, Input } from 'reactstrap';
+import Cookies from 'js-cookie'
 import './Login.css';
 import { Link } from "react-router-dom";
 
@@ -8,7 +9,8 @@ export class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: '', password:'' };
+
+        this.state = { email: '', password:''};
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -27,14 +29,14 @@ export class Login extends Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: this.state.email, password: this.state.password })
-            /*body: JSON.stringify({email: "qqq12", password: "12312"})*/
+            body: JSON.stringify({email: this.state.email, password: this.state.password}) 
         };
 
         const response = await fetch('/login', requestOptions)
-        const data = await response.text();
-        sessionStorage.setItem('token', data);
-        sessionStorage.setItem('email', this.state.email);
+        const token = await response.text();
+
+        Cookies.set('JWT', token, { path: '/' });
+      
         window.open("/", "_self");
     }
 
@@ -74,7 +76,7 @@ export class Login extends Component {
                                 </Col>
                                 <Col sm="6" className="btn">
                                     <div > 
-                                        <a href="/createqueue" className="login_btn" onClick={this.handleSubmit}>LogIn</a>
+                                        <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
                                     </div>
                                 </Col>
                                 <Col sm="6" className="btn">
@@ -88,11 +90,9 @@ export class Login extends Component {
                             </Row>
                         </Col>
 
-                       
-
-
                     </div>
                 </Container>
         );
     }
 }
+

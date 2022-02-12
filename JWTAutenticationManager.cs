@@ -7,13 +7,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using QuiQue.Models;
+using System.Threading.Tasks;
 
 namespace QuiQue
 {
     public interface IJWTAuthenticationManager
     {
-        public string Authenticate(string email, string password);
-        public bool Registration(User new_user);
+        public Task<string> Authenticate(string email, string password);
+        public Task<bool> Registration(User new_user);
     }
     //генерація токенів, створення користувачів
     public class JWTAuthenticationManager : IJWTAuthenticationManager
@@ -29,9 +30,9 @@ namespace QuiQue
             this._context = context;
         }
 
-        public string Authenticate(string email, string password)
+        public async Task<String> Authenticate(string email, string password)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == email);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user is null)
             {
@@ -58,16 +59,16 @@ namespace QuiQue
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public bool Registration(User new_user)
+        public async Task<bool> Registration(User new_user)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == new_user.Email);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == new_user.Email);
             if (user is not null)
             {
                 return false;
             }
             new_user.Password = BCrypt.Net.BCrypt.HashPassword(new_user.Password, salt);
-            _context.Add(new_user);
-            _context.SaveChanges();
+            await _context.AddAsync(new_user);
+            await _context.SaveChangesAsync();
             return true;
         }
     }
