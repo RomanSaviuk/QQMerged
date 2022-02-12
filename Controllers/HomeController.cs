@@ -49,6 +49,7 @@ namespace QuiQue.Controllers
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             User user = _context.Users.FirstOrDefault(e => e.idUser == idUser);
+            user.Password = "";
             return new OkObjectResult(user);
         }
 
@@ -79,7 +80,7 @@ namespace QuiQue.Controllers
             Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
             if (Event == null)
             {
-                return NoContent();
+                return NotFound();
             }
             return new OkObjectResult(Event);
         }
