@@ -8,6 +8,7 @@ using QuiQue.Models;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using QuiQue.Models.View;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuiQue.Controllers
 {
@@ -30,7 +31,7 @@ namespace QuiQue.Controllers
         }
         [Route("/get_queue/{queueId}")]
         [HttpGet]
-        public IActionResult QueueGetUpdate([FromRoute] int queueId)
+        public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
         {
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
             return new OkObjectResult(queue);
@@ -65,6 +66,7 @@ namespace QuiQue.Controllers
             new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
             new_position.Time_queue = DateTime.UtcNow;
             new_position.Status = "in queue";
+            new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
             _context.Add(new_position);
             _context.SaveChanges();
             return new OkObjectResult(new_position);

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
-
+using QuiQue.Hubs;
 
 namespace QuiQue
 {
@@ -76,6 +76,8 @@ namespace QuiQue
             //gkgbjzedhtgfihuaIEh
             services.AddControllersWithViews();
 
+            // add signalR for project
+            services.AddSignalR();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -122,6 +124,10 @@ namespace QuiQue
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+            });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<QueueHub>("/queue");
             });
 
             app.UseSpa(spa =>

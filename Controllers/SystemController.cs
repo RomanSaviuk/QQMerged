@@ -59,7 +59,6 @@ namespace QuiQue.Controllers
             try
             {
                 _context.Remove(queue);
-                return new OkObjectResult(queue);
             }
             catch
             {
@@ -67,6 +66,45 @@ namespace QuiQue.Controllers
             }
             _context.SaveChanges();
             return new OkObjectResult(queue);
+        }
+        [Authorize]
+        [Route("/IOwner/{idEvent}")]
+        [HttpGet]
+        public async Task<IActionResult> IOwner([FromRoute] Int64 idEvent)
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Event Event = await _context.Events.FirstOrDefaultAsync(e => e.EventId == idEvent);
+            if (Event == null)
+                return NotFound();
+
+            if (Event.OwnerId == Userid)
+                return Ok("YES");
+            else
+                return Ok("NO");
+        }
+        [Authorize]
+        [Route("/system/get_my_id")]
+        [HttpGet]
+        public async Task<IActionResult> Auth()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = await _context.Users.FirstOrDefaultAsync(c => c.idUser == Userid);
+            // Чи в токені лежить id модератора
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
+        [Authorize]
+        [Route("/queue/system/auth")]
+        [HttpGet]
+        public async Task<IActionResult> IS()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = await _context.Users.FirstOrDefaultAsync(c => c.idUser == Userid);
+            // Чи в токені лежить id модератора
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
         }
 
         [Authorize]
