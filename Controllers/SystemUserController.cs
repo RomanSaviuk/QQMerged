@@ -74,6 +74,7 @@ namespace QuiQue.Controllers
             new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
             new_position.Time_queue = DateTime.UtcNow;
             new_position.Status = "in queue";
+            new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
             _context.Add(new_position);
             _context.SaveChanges();
             return new OkObjectResult(new_position);
