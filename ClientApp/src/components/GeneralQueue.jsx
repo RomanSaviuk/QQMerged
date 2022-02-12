@@ -1,5 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Container, Row, Col} from 'reactstrap';
+import Cookies from 'js-cookie'
+
 import { Virtuoso } from 'react-virtuoso';
 import CustomScrollbar from "./CustomScroller";
 import "overlayscrollbars/css/OverlayScrollbars.css";
@@ -11,24 +13,33 @@ export class GeneralQueue extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { qname: "", queue: [], qstate: true, qdesc: "", loading: true, id: 0};
+        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false};
     }
 
     componentDidMount() {
-        this.setState({ id: this.props.match.params.id });
         this.qupdate();
     }
 
     async qupdate() {
-        const token = "Bearer " + sessionStorage.getItem('token');
-        const requestOptions = {
+        const token = "Bearer " + Cookies.get('JWT');
+
+        const qrequestOptions = {
             method: 'GET',
             headers: { 'Authorization': token }
         };
 
-        const response = await fetch(`get_queue/${this.props.match.params.id}`, requestOptions);
-        const data = await response.json();
-        this.setState({ queue: data, loading: false });
+        const qownresp = await fetch(`IOwner/${this.state.id}`, qrequestOptions);
+        const qown = await qownresp.json();
+        this.setState({ isOdmen: qown});
+
+        const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
+        const qdata = await qresponse.json();
+        this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"]});
+
+
+        const qlistresponse = await fetch(`get_queue/${this.state.id}`, qrequestOptions);
+        const qlist = await qlistresponse.json();
+        this.setState({ queue: qlist, loading: false });
     }
 
     alert(event) {
@@ -37,7 +48,7 @@ export class GeneralQueue extends Component {
 
     render() {
         let queue = this.state.queue
-        let qname = "Queue name with very long description"
+        let qname = this.state.qname
         let qsize = this.state.queue.length
         let qid = this.state.id
 
@@ -46,7 +57,7 @@ export class GeneralQueue extends Component {
                 <div className="main_block">
                     <Row>
                         <div className="queue_name">
-                            {qname} {qid}
+                            {qname}
                             <div className="queue_edit_button" onClick={this.alert}>
                             </div>
                         </div>
@@ -59,7 +70,7 @@ export class GeneralQueue extends Component {
                                     components={{Scroller: CustomScrollbar}}
                                     className="QList"
                                     data={queue}
-                                    itemContent={(index, Queue) => <div className="QItem" style={{backgroundColor: index == 0? "grey":"white"}}>{Queue.idUser}</div>}
+                                    itemContent={(index, Queue) => <div className="QItem" style={{backgroundColor: index == 0? "#82FF9D":"white"}}>{Queue.idUser}</div>}
                                 />
                             </div>
                         </Col>
