@@ -227,5 +227,60 @@ namespace QuiQue.Controllers
                     return BadRequest("Default Error");
             }
         }
+
+        //////////////////////////////////////
+        [Authorize]
+        [Route("/get_my_id")]
+        [HttpGet]
+        public IActionResult IS()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
+            
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
+
+
+        [Authorize]
+        [Route("/IOwner/{idEvent}")]
+        [HttpGet]
+        public async Task<IActionResult> IOwner([FromRoute] Int64 idEvent)
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Event Event = await _context.Events.FirstOrDefaultAsync(e => e.EventId == idEvent);
+            if (Event == null)
+                return NotFound();
+
+            if (Event.OwnerId == Userid)
+                return Ok(true);
+            else
+                return Ok(false);
+        }
+
+        [Authorize]
+        [Route("/event/{idEvent}")]
+        [HttpGet]
+        public IActionResult GetEvent([FromRoute] Int64 idEvent)
+        {
+            Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
+            if (Event == null)
+            {
+                return NotFound();
+            }
+            return new OkObjectResult(Event);
+        }
+
+        [Authorize]
+        [Route("/my_account")]
+        [HttpGet]
+        public IActionResult GetUser()
+        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User user = _context.Users.FirstOrDefault(e => e.idUser == idUser);
+            user.Password = "";
+            return new OkObjectResult(user);
+        }
     }
 }
