@@ -34,7 +34,19 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
         {
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
-            return new OkObjectResult(queue);
+
+            // convert to view 
+            List<QueueModel> queueModels = queue.Select(q => new QueueModel
+            {
+                User = _context.Users.FirstOrDefault(u => u.idUser == q.idUser).Username,
+                idUser = q.idUser,
+                EventId = q.EventId,
+                Time_queue = q.Time_queue,
+                Status = q.Status,
+                Number = q.Number
+            }).ToList();
+
+            return new OkObjectResult(queueModels);
         }
 
         [Route("/queue/system/enter/{EventId}")]

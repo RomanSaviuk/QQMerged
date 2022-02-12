@@ -70,7 +70,7 @@ export class GeneralQueue extends Component {
                                     components={{Scroller: CustomScrollbar}}
                                     className="QList"
                                     data={queue}
-                                    itemContent={(index, Queue) => <div className="QItem" style={{backgroundColor: index == 0? "#82FF9D":"white"}}>{Queue.idUser}</div>}
+                                    itemContent={(index, Queue) => <div className="QItem" style={{backgroundColor: index == 0? "#82FF9D":"white"}}>{Queue.user}</div>}
                                 />
                             </div>
                         </Col>
