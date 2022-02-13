@@ -10,6 +10,7 @@ import { Login } from './components/Login';
 import { ForgotPass } from './components/ForgotPass';
 import { GeneralQueue } from './components/GeneralQueue';
 import { EditQueue } from './components/EditQueue';
+import { Register } from './components/Register';
 
 import './custom.css'
 
@@ -28,6 +29,7 @@ export default class App extends Component {
         <Route path='/login' component={Login} />
         <Route path='/forgotpass' component={ForgotPass} />
         <Route path='/queue/:id' component={GeneralQueue} />
+        <Route path='/register' component={Register} />
       </Layout>
     );
   }

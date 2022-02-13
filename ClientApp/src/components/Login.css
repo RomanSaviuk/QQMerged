@@ -10,7 +10,7 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: 3%;
+    margin-top: 20%;
     margin-left: auto;
     margin-right: auto;
     max-width: 35em;
@@ -61,14 +61,16 @@ h1, .h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 4em;
-    color: white;
-    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
     background-color: #EDB734;
-    text-align: center;
+    height: 50px;
+    padding: 1px;
     border-radius: 12px;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    color: white;
+    text-align: center;
     font-family: 'Ropa Sans';
-    
+    font-size: 1.5em;
+    font-weight: 100;
 }
     .login_btn:hover {
         background-color: #EDB734;
@@ -86,7 +88,7 @@ h1, .h1 {
     font-family: 'Ropa Sans';
 }
 
-.register_btn {
+.login_register_btn {
     display: flex;
     align-items: center;
 /*    height: 4em;*/
@@ -99,6 +101,7 @@ h1, .h1 {
 .remember_btn {
     display: flex;
     align-items: center;
+    margin-top: 15px;
     height: 4em;
     color: #555555;
     text-align: left;
@@ -122,4 +125,20 @@ h1, .h1 {
     background-repeat: no-repeat;
     background-position: 12px 11px;
     margin-bottom:2%;
+}
+
+
+@media (min-width: 576px) {
+
+    .mainbox {
+        margin-top:3%;
+    }
+    .login_btn {
+        margin-left:40%;
+        margin-top:15px;
+    }
+
+    .forgotpass_btn {
+        margin-left: 40%;
+    }
 }
