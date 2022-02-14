@@ -35,11 +35,13 @@ namespace QuiQue.Controllers
         [HttpPost]
         public IActionResult PostCreateEvent([FromBody] Event Event)
         {
+            if (Event.Title.Length > 50 || Event.Title.Length < 3)
+            {
+                return BadRequest("Too short or too long title");
+            }
             Event.OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             // Без Title
             if (Event.Title == null) return BadRequest();
-            if (Event.Title.Length > 50) return BadRequest();
-
             // перевірити чи всі поля правильні
             _context.Add(Event);
             _context.SaveChanges();
@@ -47,7 +49,7 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/{idEvent}/moder/system/delete")]
+        [Route("/queue/{idEvent}/moder/delete")]
         [HttpDelete]
         public IActionResult QueueIdModerSystemDelete([FromRoute] Int64 idEvent, [FromQuery] Int64 idUser)
         {
@@ -61,7 +63,6 @@ namespace QuiQue.Controllers
             try
             {
                 _context.Remove(queue);
-                return new OkObjectResult(queue);
             }
             catch
             {
@@ -72,7 +73,20 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/{idEvent}/moder/system/update/")]
+        [Route("/system/get_my_id")]
+        [HttpGet]
+        public async Task<IActionResult> Auth()
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User ISuser = await _context.Users.FirstOrDefaultAsync(c => c.idUser == Userid);
+            // Чи в токені лежить id модератора
+            if (ISuser == null)
+                return NotFound();
+            return Ok(Userid);
+        }
+
+        [Authorize]
+        [Route("/queue/{idEvent}/moder/update")]
         [HttpPut]
         public IActionResult QueueIdModerSystemUpdate([FromRoute] Int64 idEvent, [FromBody] Event ev)
         {
@@ -164,16 +178,12 @@ namespace QuiQue.Controllers
             {
                 return NotFound();
             }
-            if(evnt.OwnerId != OwnerId)
-            {
-                return Forbid();
-            }
             switch (value)
             {
                 case "next":
                     var resalt = nextuser(idEvent);
                     if (resalt == null)
-                        return BadRequest("nobody in the queue");
+                        return BadRequest();
                     else
                         return new OkObjectResult(resalt);
                 case "close":
@@ -204,11 +214,27 @@ namespace QuiQue.Controllers
         {
             Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
-            
+
             if (ISuser == null)
                 return NotFound();
             return Ok(Userid);
         }
 
+
+        [Authorize]
+        [Route("/IOwner/{idEvent}")]
+        [HttpGet]
+        public async Task<IActionResult> IOwner([FromRoute] Int64 idEvent)
+        {
+            Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Event Event = await _context.Events.FirstOrDefaultAsync(e => e.EventId == idEvent);
+            if (Event == null)
+                return NotFound();
+
+            if (Event.OwnerId == Userid)
+                return Ok(true);
+            else
+                return Ok(false);
+        }
     }
 }
