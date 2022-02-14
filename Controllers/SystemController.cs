@@ -31,13 +31,15 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/create/system/create")]
+        [Route("/queue/create")]
         [HttpPost]
         public IActionResult PostCreateEvent([FromBody] Event Event)
         {
             Event.OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             // Без Title
             if (Event.Title == null) return BadRequest();
+            if (Event.Title.Length > 50) return BadRequest();
+
             // перевірити чи всі поля правильні
             _context.Add(Event);
             _context.SaveChanges();
