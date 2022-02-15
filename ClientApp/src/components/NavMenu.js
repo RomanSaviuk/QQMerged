@@ -105,7 +105,9 @@ export class NavMenu extends Component {
                                                 {renderLogauntButton()}
                                             </NavItem>
                                             <NavItem>
-                                                {renderSignauntButton()}
+                                                <NavLink tag={Link} className="adaptive_width" to="/register">
+                                                    <div className="signup_button">Sign Up</div>
+                                                </NavLink>
                                             </NavItem>
                                         </ul>
                                     </Col>

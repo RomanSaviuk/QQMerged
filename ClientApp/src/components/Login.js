@@ -80,7 +80,7 @@ export class Login extends Component {
                                     </div>
                                 </Col>
                                 <Col sm="6" className="btn">
-                                    <div className="register_btn">Register now</div>
+                                    <div className="login_register_btn">Register now</div>
                                 </Col>
                                 <Col sm="6" className="btn">
                                     <div >
