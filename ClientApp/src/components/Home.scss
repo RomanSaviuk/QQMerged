@@ -48,13 +48,17 @@ body {
     width: 130px;
     box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
     border-radius: 12px;
-    color: white;
+    color: white !important;
     height: 45px;
     text-align: center;
     padding: 1px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.submit_button > a {
+    color: white !important;
 }
 
 .input_id_block {

@@ -19,10 +19,10 @@ export class Home extends Component {
     }
 
     handleSubmit(event) {
-        /*alert('An id was submitted: ' + this.state.idQ);*/
         event.preventDefault();
         window.open("/queue", "_self");
     }
+
 
     render() {
         let id = this.state.idQ
@@ -39,10 +39,11 @@ export class Home extends Component {
                                 </div>
                             </div>
 
-                            <div className="submit_button">
-                                <Link to={`queue/${id}`}>Join</Link>
-                                {/*<Input href="/queue/" style={{color:"white"}} type="submit" value="Join" */}{/*onClick={this.handleSubmit}*/}{/* />*/}
-                            </div>
+                            <Link to={`queue/${id}`}>
+                                <div className="submit_button">
+                                    Join
+                                </div>
+                            </Link>
                         </div>
                     </Col>
 
