@@ -15,7 +15,6 @@ body {
     margin-right: auto;
     max-width: 35em;
     width: 90%;
-    
 }
 
 .inputitem {
@@ -61,15 +60,15 @@ h1, .h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 4em;
+    height: 3em;
     color: white;
     box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
     background-color: #EDB734;
     text-align: center;
-    border-radius: 12px;
+    border-radius: 8px;
     font-family: 'Ropa Sans';
-    
 }
+
     .login_btn:hover {
         background-color: #EDB734;
         color: white;
@@ -79,7 +78,7 @@ h1, .h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-/*    height: 4em;*/
+    /*    height: 4em;*/
     color: #555555;
     text-align: center;
     font-size: 0.8rem;
@@ -89,7 +88,7 @@ h1, .h1 {
 .register_btn {
     display: flex;
     align-items: center;
-/*    height: 4em;*/
+    /*    height: 4em;*/
     color: white;
     text-align: left;
     font-size: 0.8rem;
@@ -121,5 +120,5 @@ h1, .h1 {
     background-color: white;
     background-repeat: no-repeat;
     background-position: 12px 11px;
-    margin-bottom:2%;
+    margin-bottom: 2%;
 }

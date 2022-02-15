@@ -31,10 +31,14 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/create/system/create")]
+        [Route("/queue/create")]
         [HttpPost]
         public IActionResult PostCreateEvent([FromBody] Event Event)
         {
+            if (Event.Title.Length > 50 || Event.Title.Length < 3)
+            {
+                return BadRequest("Too short or too long title");
+            }
             Event.OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             // Без Title
             if (Event.Title == null) return BadRequest();
@@ -45,7 +49,7 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/{idEvent}/moder/system/delete")]
+        [Route("/queue/{idEvent}/moder/delete")]
         [HttpDelete]
         public IActionResult QueueIdModerSystemDelete([FromRoute] Int64 idEvent, [FromQuery] Int64 idUser)
         {
@@ -67,7 +71,7 @@ namespace QuiQue.Controllers
             _context.SaveChanges();
             return new OkObjectResult(queue);
         }
-        
+
         [Authorize]
         [Route("/system/get_my_id")]
         [HttpGet]
@@ -82,7 +86,7 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/{idEvent}/moder/system/update/")]
+        [Route("/queue/{idEvent}/moder/update")]
         [HttpPut]
         public IActionResult QueueIdModerSystemUpdate([FromRoute] Int64 idEvent, [FromBody] Event ev)
         {
@@ -210,7 +214,7 @@ namespace QuiQue.Controllers
         {
             Int64 Userid = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             User ISuser = _context.Users.FirstOrDefault(c => c.idUser == Userid);
-            
+
             if (ISuser == null)
                 return NotFound();
             return Ok(Userid);
