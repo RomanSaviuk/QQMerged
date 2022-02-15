@@ -52,6 +52,41 @@ export class GeneralQueue extends Component {
         let qsize = this.state.queue.length
         let qid = this.state.id
 
+        let isOdmen = this.state.isOdmen;
+
+        const Button1 = () => {
+            if ( isOdmen ) {
+                return <div className="next_button" onClick={this.alert}>NEXT odm</div>;
+            } else {
+                return <div className="next_button" onClick={this.alert}>NEXT not odm</div>;
+            }
+        }
+
+        const Button2 = () => {
+            if ( isOdmen ) {
+                return <div className="ppl_inqueue" onClick={this.alert}>{qsize}<br />odm</div>;
+            } else {
+                return <div className="ppl_inqueue" onClick={this.alert}>{qsize}<br />not odm</div>;
+            }
+        }
+
+        const Button3 = () => {
+            if ( isOdmen ) {
+                return <div className="ppl_inqueue" onClick={this.alert}>Btn3<br />odm</div>;
+            } else {
+                return <div className="ppl_inqueue" onClick={this.alert}>Btn3<br />not odm</div>;
+            }
+        }
+
+        const Button4 = () => {
+            if ( isOdmen ) {
+                return <div className="ppl_inqueue" onClick={this.alert}>Btn4<br />odm</div>;
+            } else {
+                return <div className="ppl_inqueue" onClick={this.alert}>Btn4<br />not odm</div>;
+            }
+        }
+
+
         return (
             <Container fluid>
                 <div className="main_block">
@@ -78,16 +113,16 @@ export class GeneralQueue extends Component {
                         <Col sm="4">
                             <Row className="buttons">
                                 <Col sm="6" className="button">
-                                    <div className="next_button" onClick={this.alert}>NEXT</div>
+                                    {Button1()}
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue" onClick={this.alert}>{qsize}</div>
+                                    {Button2()}
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue" onClick={this.alert}></div>
+                                    {Button3()}
                                 </Col>
                                 <Col sm="6" className="button">
-                                    <div className="ppl_inqueue" onClick={this.alert}></div>
+                                    {Button4()}
                                 </Col>
                             </Row>
                         </Col>

@@ -11,6 +11,8 @@ export class NavMenu extends Component {
     constructor(props) {
         super(props);
         this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.LogOut = this.LogOut.bind(this);
+
         this.state = { collapsed: true , authorized: false, username: ""};
     }
 
@@ -42,13 +44,18 @@ export class NavMenu extends Component {
         }
     }
 
+    LogOut() {
+        Cookies.remove('JWT');
+        window.open("/", "_self");
+    }
+
     render() {
         let authorized = this.state.authorized;
         let username = this.state.username;
 
         const renderLogauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" to="/account">{username}</NavLink>;
+                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut}>Log Out</NavLink>;
             } else {
                 return <NavLink tag={Link} className="adaptive_width" to="/login">Log In</NavLink>;
             }
@@ -56,7 +63,7 @@ export class NavMenu extends Component {
 
         const renderSignauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">Account</div></NavLink>;
+                return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">{username}</div></NavLink>;
             } else {
                 return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">Sign Up</div></NavLink>;
             }

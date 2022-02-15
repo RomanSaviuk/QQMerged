@@ -15,7 +15,6 @@ body {
     margin-right: auto;
     max-width: 35em;
     width: 90%;
-    
 }
 
 .inputitem {
@@ -72,6 +71,7 @@ h1, .h1 {
     font-size: 1.5em;
     font-weight: 100;
 }
+
     .login_btn:hover {
         background-color: #EDB734;
         color: white;
@@ -81,7 +81,7 @@ h1, .h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-/*    height: 4em;*/
+    /*    height: 4em;*/
     color: #555555;
     text-align: center;
     font-size: 0.8rem;
@@ -91,7 +91,7 @@ h1, .h1 {
 .login_register_btn {
     display: flex;
     align-items: center;
-/*    height: 4em;*/
+    /*    height: 4em;*/
     color: white;
     text-align: left;
     font-size: 0.8rem;
