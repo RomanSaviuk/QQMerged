@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie'
 import './NavMenu.css';
 
+import {AppContext} from './AppContext.jsx';
 
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
+
         this.toggleNavbar = this.toggleNavbar.bind(this);
         this.LogOut = this.LogOut.bind(this);
 
@@ -39,6 +41,7 @@ export class NavMenu extends Component {
             if (response.ok) {
                 const data = await response.json();
                 sessionStorage.setItem('id', data["idUser"]);
+                this.context.toggleAuth(true);
                 this.setState({ authorized: true, username: data["username"]});
             }
         }
@@ -46,6 +49,7 @@ export class NavMenu extends Component {
 
     LogOut() {
         Cookies.remove('JWT');
+        this.context.toggleAuth(false);
         window.open("/", "_self");
     }
 
@@ -55,7 +59,7 @@ export class NavMenu extends Component {
 
         const renderLogauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut}>Log Out</NavLink>;
+                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut} to="">Log Out</NavLink>;
             } else {
                 return <NavLink tag={Link} className="adaptive_width" to="/login">Log In</NavLink>;
             }
@@ -118,3 +122,7 @@ export class NavMenu extends Component {
         );
     }
 }
+
+NavMenu.contextType = AppContext;
+
+export default NavMenu;

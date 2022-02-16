@@ -17,7 +17,7 @@ export class GeneralQueue extends Component {
     }
 
     componentDidMount() {
-        this.qupdate();
+        setInterval(() => {this.qupdate();}, 3000);
     }
 
     async qupdate() {
