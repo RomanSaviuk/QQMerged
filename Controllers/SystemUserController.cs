@@ -100,7 +100,7 @@ namespace QuiQue.Controllers
         }
         [Route("/get_my_event")]
         [HttpGet]
-        public async Task<IActionResult> MyEvent([FromRoute] Int64 EventId)
+        public async Task<IActionResult> MyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             List<Event> Event = await _context.Events.Where(e => e.OwnerId == idUser).ToListAsync();
@@ -110,5 +110,27 @@ namespace QuiQue.Controllers
             }
             return new OkObjectResult(Event);
         }
+
+        [Route("/get_my_queue")]
+        [HttpGet]
+        public async Task<IActionResult> MyQeueu()
+        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            var events = await _context.Events.Join(_context.Queues,
+                e => e.EventId,
+                q => q.EventId,
+                (e, q) => new
+                {
+                    EventId = e.EventId,
+                    OwnerId = e.OwnerId,
+                    Title = e.Title,
+                    isFastQueue = e.isFastQueue,
+                    WaitingTimer = e.WaitingTimer,
+                    User = q.idUser
+                }).Where(e => e.User == idUser).ToListAsync();  
+            return new OkObjectResult(events);
+        }
+
     }
 }
