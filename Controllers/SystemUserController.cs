@@ -98,5 +98,17 @@ namespace QuiQue.Controllers
             _context.SaveChanges();
             return new OkResult();
         }
+        [Route("/get_my_event")]
+        [HttpGet]
+        public async Task<IActionResult> MyEvent([FromRoute] Int64 EventId)
+        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            List<Event> Event = await _context.Events.Where(e => e.OwnerId == idUser).ToListAsync();
+            if (Event.Count() == 0)
+            {
+                return NotFound("No info");
+            }
+            return new OkObjectResult(Event);
+        }
     }
 }
