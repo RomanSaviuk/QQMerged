@@ -103,3 +103,35 @@ a, a:hover {
     text-decoration: none;
     background-color: transparent;
 }
+
+
+/*modal*/
+.btn-close {
+    display: none;
+}
+
+.modal-footer {
+    justify-content: space-between;
+    border-top: unset;
+    border-bottom-right-radius: unset;
+    border-bottom-left-radius: unset;
+    font-size: 1.5rem;
+}
+
+.modal-content {
+    border: unset;
+    border-radius: unset;
+    outline: unset;
+    border-radius: 20px;
+}
+
+.ok_button {
+    background-color: #7DFA91;
+    width: 80px;
+    border-radius: 12px;
+    color: white;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
