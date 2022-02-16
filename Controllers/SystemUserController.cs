@@ -100,10 +100,29 @@ namespace QuiQue.Controllers
         }
         [Route("/get_my_event")]
         [HttpGet]
-        public async Task<IActionResult> MyEvent([FromRoute] Int64 EventId)
+        public async Task<IActionResult> MyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             List<Event> Event = await _context.Events.Where(e => e.OwnerId == idUser).ToListAsync();
+            if (Event.Count() == 0)
+            {
+                return NotFound("No info");
+            }
+            return new OkObjectResult(Event);
+        }
+
+        [Route("/get_not_my_event")]
+        [HttpGet]
+        public async Task<IActionResult> NotMyEvent()
+        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            List<Queue> Queue = await _context.Queues.Where(e => e.idUser == idUser).ToListAsync();
+            List<Event> Event = new List<Event>();
+            for (int i = 0; i< Queue.Count; i++)
+            {
+                Event.Add(_context.Events.FirstOrDefault(e => e.EventId == Queue[i].EventId));
+            }
+            
             if (Event.Count() == 0)
             {
                 return NotFound("No info");
