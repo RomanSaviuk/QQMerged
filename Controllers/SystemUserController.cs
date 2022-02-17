@@ -33,7 +33,7 @@ namespace QuiQue.Controllers
         [HttpGet]
         public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
         {
-            List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").ToListAsync();
+            List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e =>e.Number).ToListAsync();
 
             if (queue.Count() == 0)
                 return NoContent();
