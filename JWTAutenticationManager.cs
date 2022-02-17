@@ -62,7 +62,23 @@ namespace QuiQue
         public async Task<bool> Registration(User new_user)
         {
             User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == new_user.Email);
+            //перевірка чи існує такий користувач
             if (user is not null)
+            {
+                return false;
+            }
+            //наскільки нормальний в нього юзернейм, пробач Ян
+            if (new_user.Username.Length < 3 || new_user.Username.Length > 16)
+            {
+                return false;
+            }
+            //придумали нормальний пароль?
+            else if (new_user.Password.Length < 8 || new_user.Password.Length > 20)
+            {
+                return false;
+            }
+            //ввели пошту чи простий рядок? хоча "@" нічого ще не означає
+            if (!new_user.Email.Contains("@") && !new_user.Email.Contains(".") && new_user.Email.Length < 7)
             {
                 return false;
             }

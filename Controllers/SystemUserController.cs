@@ -15,7 +15,7 @@ namespace QuiQue.Controllers
     [ApiController]
     [Authorize]
     [Route("/queues/{queueId}/system")]
-    public class SystemUserController : ControllerBase
+    public class SystemUserController : Controller
     {
         private readonly ILogger<SystemUserController> _logger;
 
@@ -47,6 +47,25 @@ namespace QuiQue.Controllers
             }).ToList();
 
             return new OkObjectResult(queueModels);
+        }
+
+        [Route("/user/change")]
+        [HttpPut]
+        public IActionResult UserChange([FromBody] User user)
+        {
+            Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            if (user.Username == null || user.Username.Length < 3 || user.Username.Length > 16)
+            {
+                return BadRequest("Too short or too long title");
+            }
+            if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
+            {
+                return BadRequest("Too short or too long title");
+            }
+            
+            _context.Update(user);
+            return new OkObjectResult(user);
         }
 
         [Route("/queue/system/enter/{EventId}")]
@@ -132,6 +151,45 @@ namespace QuiQue.Controllers
             }
             return new OkObjectResult(Event);
         }
+
+        private List<Event> fix(List<Event> events)
+        {
+            List<Event> eventsresult = new List<Event> {};
+            long Id = -1;
+            foreach (var E in events)
+            {
+                if(E.EventId != Id)
+                {
+                    eventsresult.Add(E);
+                }
+                Id = E.EventId;
+            }
+            return eventsresult;
+        }
+        
+        [Route("/get_my_queue")]
+        [HttpGet]
+        public async Task<IActionResult> MyQeueu()
+        {
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            var events =  await _context.Events.Join(_context.Queues,
+                e => e.EventId,
+                q => q.EventId,
+                
+                (e, q) => new { e, q }
+                ).Where(z => z.q.idUser == idUser)
+                .Select(z => new Event {
+                    EventId = z.e.EventId,
+                    OwnerId = z.e.OwnerId,
+                    Title = z.e.Title,
+                    Description = z.e.Description
+                }).OrderBy(z=> z.EventId).ToListAsync();  //
+
+
+            return new OkObjectResult(fix(events));//
+        }
+
     }
 }
 
