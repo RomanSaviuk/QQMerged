@@ -52,14 +52,18 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/queue/{idEvent}/moder/delete")]
         [HttpDelete]
-        public IActionResult QueueIdModerSystemDelete([FromRoute] Int64 idEvent, [FromQuery] Int64 idUser)
+        public async Task <IActionResult> QueueIdModerSystemDelete([FromRoute] Int64 idEvent, [FromQuery] Int64 idUser)
         {
+            User user = await _context.Users.FirstOrDefaultAsync(c => c.idUser == idUser);
+            if (user == null)
+            {
+                return BadRequest();
+            }
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Queue queue = _context.Queues.FirstOrDefault(c => c.idUser == idUser && c.EventId == idEvent);
-            Event evnt = _context.Events.FirstOrDefault(c => c.EventId == idEvent);
+            Queue queue = await _context.Queues.FirstOrDefaultAsync(c => c.idUser == idUser && c.EventId == idEvent);
+            Event evnt = await _context.Events.FirstOrDefaultAsync(c => c.EventId == idEvent);
             // Чи в токені лежить id модератора
-            if (evnt == null || evnt.OwnerId != OwnerId) return Forbid();
-            if (evnt.OwnerId != OwnerId) return UnprocessableEntity();
+            if (evnt == null || evnt.OwnerId != OwnerId) return UnprocessableEntity();
             // Перевіряю чи є така черга взагалі для того, щоб видалити
             try
             {
@@ -67,7 +71,7 @@ namespace QuiQue.Controllers
             }
             catch
             {
-                return NotFound();
+                return BadRequest();
             }
             _context.SaveChanges();
             return new OkObjectResult(queue);
@@ -89,19 +93,16 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/queue/{idEvent}/moder/update")]
         [HttpPut]
-        public IActionResult QueueIdModerSystemUpdate([FromRoute] Int64 idEvent, [FromBody] Event ev)
+        public async Task<IActionResult> QueueIdModerSystemUpdate([FromRoute] Int64 idEvent, [FromBody] Event ev)
         {
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Event evnt = _context.Events.FirstOrDefault(c => c.EventId == idEvent);
+            Event evnt = await _context.Events.FirstOrDefaultAsync(c => c.EventId == idEvent);
             // перевіряю наявність потрібних даних
-            try
+            if (evnt == null || ev.Title.Length < 4 || ev.Title.Length > 50)
             {
-                evnt.Title = ev.Title;
+                return BadRequest();
             }
-            catch
-            {
-                return NotFound();
-            }
+            evnt.Title = ev.Title;
             if (evnt.OwnerId != OwnerId)
             {
                 return Forbid();
@@ -109,18 +110,11 @@ namespace QuiQue.Controllers
             try
             {
                 _context.Update(evnt);
-            }
-            catch
-            {
-                return NotFound();
-            }
-            try
-            {
                 _context.SaveChanges();
             }
             catch
             {
-                return UnprocessableEntity();
+                return BadRequest();
             }
             return new OkObjectResult(evnt);
         }
