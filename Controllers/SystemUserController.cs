@@ -49,6 +49,25 @@ namespace QuiQue.Controllers
             return new OkObjectResult(queueModels);
         }
 
+        [Route("/user/change")]
+        [HttpPut]
+        public IActionResult UserChange([FromBody] User user)
+        {
+            Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            if (user.Username == null || user.Username.Length < 3 || user.Username.Length > 16)
+            {
+                return BadRequest("Too short or too long title");
+            }
+            if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
+            {
+                return BadRequest("Too short or too long title");
+            }
+            
+            _context.Update(user);
+            return new OkObjectResult(user);
+        }
+
         [Route("/queue/system/enter/{EventId}")]
         [HttpPost]
         public IActionResult EnterQueue([FromRoute] Int64 EventId)
