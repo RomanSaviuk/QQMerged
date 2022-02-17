@@ -33,7 +33,7 @@ namespace QuiQue.Controllers
         [HttpGet]
         public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
         {
-            List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
+            List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").ToList();
 
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel
