@@ -10,13 +10,16 @@ export class Account extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { email: '', password: '' };
-
+        this.state = { username: '', email: '', password: '', phone_number: '' };
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handlePhoneChange = this.handlePhoneChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
+    handleUsernameChange(event) {
+        this.setState({ username: event.target.value });
+    }
     handleEmailChange(event) {
         this.setState({ email: event.target.value });
     }
@@ -24,15 +27,20 @@ export class Account extends Component {
     handlePasswordChange(event) {
         this.setState({ password: event.target.value });
     }
-
+    handlePhoneChange(event) {
+        this.setState({ phone_number: event.target.value });
+    }
     async handleSubmit(event) {
         const requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: this.state.email, password: this.state.password })
+            body: JSON.stringify({
+                username: this.state.username, email: this.state.email, password: this.state.password,
+                phone_number: this.state.phone_number
+            })
         };
 
-        const response = await fetch('/login', requestOptions)
+        const response = await fetch('/account', requestOptions)
         const token = await response.text();
 
         Cookies.set('JWT', token, { path: '/' });
@@ -50,7 +58,7 @@ export class Account extends Component {
                         <div className="inputitem">
                             <div className="inputbox">
 
-                                <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="Username" />
+                                <Input type="text" value={this.state.username} onChange={this.handleUsernameChange} placeholder="Username" />
                             </div>
                             <div className="inputbox">
 
@@ -64,7 +72,7 @@ export class Account extends Component {
                             </div>
                             <div className="inputbox">
 
-                                <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Phone number" />
+                                <Input type="password" value={this.state.phone_number} onChange={this.handlePhoneChange} placeholder="Phone number" />
 
                             </div>
                         </div>
