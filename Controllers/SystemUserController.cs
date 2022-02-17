@@ -35,6 +35,8 @@ namespace QuiQue.Controllers
         {
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
 
+            if (queue.Count() == 0)
+                return NoContent();
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel
             {
@@ -45,7 +47,8 @@ namespace QuiQue.Controllers
                 Status = q.Status,
                 Number = q.Number
             }).ToList();
-
+            if(queueModels.Count() == 0)
+                return BadRequest();
             return new OkObjectResult(queueModels);
         }
 
@@ -58,6 +61,15 @@ namespace QuiQue.Controllers
             if (user.Username == null || user.Username.Length < 3 || user.Username.Length > 16)
             {
                 return BadRequest("Too short or too long title");
+            }
+            User user_before = _context.Users.FirstOrDefault(c => c.idUser == OwnerId);
+            if (user_before.Email != user.Email)
+            {
+                User user_after = _context.Users.FirstOrDefault(c => c.idUser == OwnerId);
+                if (user_after != null)
+                {
+                    return BadRequest("Wrong email");
+                }
             }
             if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
             {
