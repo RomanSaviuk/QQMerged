@@ -46,7 +46,6 @@ export class Home extends Component {
         }
         else {
             console.log("unathorized");
-            /*this.props.history.push(`queue/${this.state.idQ}`);*/
             this.setState({ redirect: true });
         }
     }
