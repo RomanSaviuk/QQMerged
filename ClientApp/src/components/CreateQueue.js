@@ -13,12 +13,6 @@ export class CreateQueue extends Component {
                     <form class="item" action="">
                         <input type="text" class="iteminput" placeholder="Name your queue" />
                     </form>
-                    <form class="item" action="">
-                        <input type="text" class="iteminput1" placeholder="Queue description" />
-                    </form>
-                    <form class="item" action="">
-                        <input type="text" class="iteminput" placeholder="Password" />
-                    </form>
                 </div>
                 <div>
                     <form action="">
