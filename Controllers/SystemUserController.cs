@@ -36,7 +36,7 @@ namespace QuiQue.Controllers
             List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").ToListAsync();
 
             if (queue.Count() == 0)
-                return NoContent();
+                return new OkObjectResult(new List<QueueModel>());
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel
             {
@@ -95,7 +95,7 @@ namespace QuiQue.Controllers
             {
                 return Forbid();
             }
-            if (_context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
+            if (await _context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
             {
                 return UnprocessableEntity();
             }

@@ -54,22 +54,7 @@
     justify-content: center;
 }
 
-.next_button {
-    display: flex;
-    position: absolute;
-    background-color: #82FF9D;
-    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
-    border-radius: 15px;
-    width: 90%;
-    height: 90%;
-    margin: 5%;
-    text-align: center;
-    font-size: 3vw;
-    align-items: center;
-    justify-content: center;
-}
-
-.ppl_inqueue {
+.base_button {
     display: flex;
     position: absolute;
     background-color: white;
@@ -78,16 +63,51 @@
     width: 90%;
     height: 90%;
     margin: 5%;
-    text-align: center;
-    font-size: 2vw;
+    font-size: 3vw;
     align-items: center;
     justify-content: center;
     user-select: none;
+    cursor: pointer;
+    text-align: center;
 }
 
-.QList {
-
+.next_button {
+    @extend .base_button;
+    background-color: #82FF9D;
 }
+
+.ppl_inqueue {
+    @extend .base_button;
+    background-color: white;
+    font-size: 8vw;
+    cursor: default;
+}
+
+.freeze_button {
+    @extend .base_button;
+    background-color: white;
+    font-size: 2vw;
+}
+
+.clicker {
+    @extend .base_button;
+    background-color: white;
+}
+
+.your_place {
+    @extend .base_button;
+    background-color: white;
+    font-size: 2vw;
+    cursor: default;
+}
+
+.join_button {
+    @extend .base_button;
+    background-color: white;
+    font-size: 2vw;
+}
+
+
 
 .QItem {
     background-color: #F4F4F4;

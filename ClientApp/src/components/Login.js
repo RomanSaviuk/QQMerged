@@ -36,6 +36,7 @@ export class Login extends Component {
         const token = await response.text();
 
         Cookies.set('JWT', token, { path: '/' });
+        Cookies.set('Click', 0, { path: '/' });
       
         window.open("/", "_self");
     }

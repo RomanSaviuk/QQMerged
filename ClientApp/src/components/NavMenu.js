@@ -59,7 +59,7 @@ export class NavMenu extends Component {
 
         const renderLogauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut} to="">Log Out</NavLink>;
+                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut}>Log Out</NavLink>;
             } else {
                 return <NavLink tag={Link} className="adaptive_width" to="/login">Log In</NavLink>;
             }
@@ -69,7 +69,7 @@ export class NavMenu extends Component {
             if ( authorized ) {
                 return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">{username}</div></NavLink>;
             } else {
-                return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">Sign Up</div></NavLink>;
+                return <NavLink tag={Link} className="adaptive_width" to="/register"><div className="signup_button">Sign Up</div></NavLink>;
             }
         }
 
