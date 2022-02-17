@@ -1,48 +1,76 @@
 ﻿import React, { Component } from 'react';
 import { Container, Row, Col} from 'reactstrap';
 import Cookies from 'js-cookie'
-
 import { Virtuoso } from 'react-virtuoso';
 import CustomScrollbar from "./CustomScroller";
 import "overlayscrollbars/css/OverlayScrollbars.css";
 import './GeneralQueue.scss';
-
+import {Link, Redirect, withRouter} from "react-router-dom";
+import {AppContext} from './AppContext.jsx';
 
 export class GeneralQueue extends Component {
     static displayName = GeneralQueue.name;
 
     constructor(props) {
         super(props);
-        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false};
+        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false};
+
+        this.handleNext = this.handleNext.bind(this);
     }
 
     componentDidMount() {
         setInterval(() => {this.qupdate();}, 3000);
     }
 
-    async qupdate() {
-        const token = "Bearer " + Cookies.get('JWT');
+    async handleNext() {
+        console.log("next");
+        if (this.state.isOdmen) {
 
-        const qrequestOptions = {
-            method: 'GET',
-            headers: { 'Authorization': token }
-        };
+            const token = "Bearer " + Cookies.get('JWT');
+            const requestOptions = {
+                method: 'PUT',
+                headers: { 'Authorization': token }
+            };
 
-        const qownresp = await fetch(`IOwner/${this.state.id}`, qrequestOptions);
-        const qown = await qownresp.json();
-        this.setState({ isOdmen: qown});
+            const response = await fetch(`/queue/${this.state.id}/moder/next`, requestOptions);
 
-        const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
-        const qdata = await qresponse.json();
-        this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"]});
-
-
-        const qlistresponse = await fetch(`get_queue/${this.state.id}`, qrequestOptions);
-        const qlist = await qlistresponse.json();
-        this.setState({ queue: qlist, loading: false });
+            if (response.ok) {
+                this.qupdate();
+            }
+        }
+        else {
+            this.setState({ redirect: true });
+        }
     }
 
-    alert(event) {
+
+    async qupdate() {
+        if (this.context["auth"]) {
+            const token = "Bearer " + Cookies.get('JWT');
+
+            const qrequestOptions = {
+                method: 'GET',
+                headers: { 'Authorization': token }
+            };
+
+            const qownresp = await fetch(`IOwner/${this.state.id}`, qrequestOptions);
+            const qown = await qownresp.json();
+            this.setState({ isOdmen: qown });
+
+            const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
+            const qdata = await qresponse.json();
+            this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"] });
+
+            const qlistresponse = await fetch(`get_queue/${this.state.id}`, qrequestOptions);
+            const qlist = await qlistresponse.json();
+            this.setState({ queue: qlist, loading: false });
+        }
+        else {
+            this.setState({ redirect: true });
+        }
+    }
+
+    alert() {
         alert('Button clicked');
     }
 
@@ -56,9 +84,9 @@ export class GeneralQueue extends Component {
 
         const Button1 = () => {
             if ( isOdmen ) {
-                return <div className="next_button" onClick={this.alert}>NEXT odm</div>;
+                return <div className="next_button" onClick={this.handleNext}>NEXT</div>;
             } else {
-                return <div className="next_button" onClick={this.alert}>NEXT not odm</div>;
+                return <div className="next_button" onClick={this.alert}>not<br />NEXT</div>;
             }
         }
 
@@ -86,6 +114,9 @@ export class GeneralQueue extends Component {
             }
         }
 
+        if (this.state.redirect) {
+            return (<Redirect push to={`/`} />);
+        }
 
         return (
             <Container fluid>
@@ -132,3 +163,6 @@ export class GeneralQueue extends Component {
         );
     }
 }
+
+GeneralQueue.contextType = AppContext;
+export default withRouter(GeneralQueue);

@@ -163,7 +163,7 @@ namespace QuiQue.Controllers
         }
 
         [Authorize]
-        [Route("/queue/{idEvent}/moder/system/{value}/")]
+        [Route("/queue/{idEvent}/moder/{value}/")]
         [HttpPut]
         public IActionResult QueueIdModerSystemNext([FromRoute] Int64 idEvent, [FromRoute] string value)
         {
