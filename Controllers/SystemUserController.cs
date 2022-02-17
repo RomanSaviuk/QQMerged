@@ -35,6 +35,8 @@ namespace QuiQue.Controllers
         {
             List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
 
+            if (queue.Count() == 0)
+                return NoContent();
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel
             {
@@ -45,7 +47,8 @@ namespace QuiQue.Controllers
                 Status = q.Status,
                 Number = q.Number
             }).ToList();
-
+            if(queueModels.Count() == 0)
+                return BadRequest();
             return new OkObjectResult(queueModels);
         }
 
