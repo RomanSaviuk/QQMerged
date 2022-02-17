@@ -62,6 +62,15 @@ namespace QuiQue.Controllers
             {
                 return BadRequest("Too short or too long title");
             }
+            User user_before = _context.Users.FirstOrDefault(c => c.idUser == OwnerId);
+            if (user_before.Email != user.Email)
+            {
+                User user_after = _context.Users.FirstOrDefault(c => c.idUser == OwnerId);
+                if (user_after != null)
+                {
+                    return BadRequest("Wrong email");
+                }
+            }
             if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
             {
                 return BadRequest("Too short or too long title");
