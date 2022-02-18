@@ -13,13 +13,19 @@ export class GeneralQueue extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false};
+        this.intervalID = 0;
+        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0};
 
         this.handleNext = this.handleNext.bind(this);
+        this.click = this.click.bind(this);
     }
 
     componentDidMount() {
-        setInterval(() => {this.qupdate();}, 3000);
+        this.intervalID = setInterval(() => { this.qupdate(); }, 3000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalID);
     }
 
     async handleNext() {
@@ -54,16 +60,22 @@ export class GeneralQueue extends Component {
             };
 
             const qownresp = await fetch(`IOwner/${this.state.id}`, qrequestOptions);
-            const qown = await qownresp.json();
-            this.setState({ isOdmen: qown });
+            if (qownresp.ok) {
+                const qown = await qownresp.json();
+                this.setState({ isOdmen: qown });
+            }
 
             const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
-            const qdata = await qresponse.json();
-            this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"] });
+            if (qresponse.ok) {
+                const qdata = await qresponse.json();
+                this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"] });
+            }
 
             const qlistresponse = await fetch(`get_queue/${this.state.id}`, qrequestOptions);
-            const qlist = await qlistresponse.json();
-            this.setState({ queue: qlist, loading: false });
+            if (qlistresponse.ok) {
+                const qlist = await qlistresponse.json();
+                this.setState({ queue: qlist, loading: false });
+            }
         }
         else {
             this.setState({ redirect: true });
@@ -74,45 +86,73 @@ export class GeneralQueue extends Component {
         alert('Button clicked');
     }
 
+    click() {
+        this.setState({ clicker: this.state.clicker + 1 });
+    }
+
+
+    async qgen() {
+        for (var i = 10; i < 100; i++) {
+            const username = "user" + i;
+            const email = username + "@gmail.com"
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(
+                    {
+                        "email": email,
+                        "username": username,
+                        "password": "11111111",
+                        "phoneNumber": "11111111"
+                    })
+            };
+
+            const response1 = await fetch('/register', requestOptions)
+            const response2 = await fetch('/login', requestOptions)
+            const token = await response2.text();
+            const token2 = "Bearer " + token;
+            const requestOptions2 = {
+                method: 'POST',
+                headers: { 'Authorization': token2 }
+            };
+
+            const response3 = await fetch('/queue/enter/6', requestOptions2)
+            console.log(response3);
+        }
+    }
+
     render() {
         let queue = this.state.queue
         let qname = this.state.qname
         let qsize = this.state.queue.length
         let qid = this.state.id
-
+        let clicker = this.state.clicker
         let isOdmen = this.state.isOdmen;
 
         const Button1 = () => {
             if ( isOdmen ) {
                 return <div className="next_button" onClick={this.handleNext}>NEXT</div>;
             } else {
-                return <div className="next_button" onClick={this.alert}>not<br />NEXT</div>;
+                return <div className="join_button" onClick={this.alert}>JOIN</div>;
             }
         }
 
         const Button2 = () => {
-            if ( isOdmen ) {
-                return <div className="ppl_inqueue" onClick={this.alert}>{qsize}<br />odm</div>;
-            } else {
-                return <div className="ppl_inqueue" onClick={this.alert}>{qsize}<br />not odm</div>;
-            }
+            return <div className="ppl_inqueue">{qsize}</div>;
         }
 
         const Button3 = () => {
             if ( isOdmen ) {
-                return <div className="ppl_inqueue" onClick={this.alert}>Btn3<br />odm</div>;
+                return <div className="freeze_button" onClick={this.alert}>Freeze<br />queue</div>;
             } else {
-                return <div className="ppl_inqueue" onClick={this.alert}>Btn3<br />not odm</div>;
+                return <div className="your_place" onClick={this.alert}>0<br />Your place</div>;
             }
         }
 
         const Button4 = () => {
-            if ( isOdmen ) {
-                return <div className="ppl_inqueue" onClick={this.alert}>Btn4<br />odm</div>;
-            } else {
-                return <div className="ppl_inqueue" onClick={this.alert}>Btn4<br />not odm</div>;
-            }
+            return <div className="clicker" onClick={this.click}>{clicker}<br />Click!</div>;
         }
+
 
         if (this.state.redirect) {
             return (<Redirect push to={`/`} />);

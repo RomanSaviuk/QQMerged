@@ -38,7 +38,7 @@ namespace QuiQue.Controllers
             List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e =>e.Number).ToListAsync();
 
             if (queue.Count() == 0)
-                return NoContent();
+                return new OkObjectResult(new List<QueueModel>());
             // convert to view 
             List<QueueModel> queueModels = queue.Select(q => new QueueModel
             {
