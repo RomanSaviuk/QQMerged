@@ -38,22 +38,10 @@ namespace QuiQue.Controllers
             List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e =>e.Number).ToListAsync();
 
             if (queue.Count() == 0)
-                return new OkObjectResult(new List<QueueModel>());
+                return new OkObjectResult(new List<Queue>());
             // convert to view 
-            List<QueueModel> queueModels = queue.Select(q => new QueueModel
-            {
-                User =  _context.Users.FirstOrDefault(u => u.idUser == q.idUser).Username,
-                idUser = q.idUser,
-                EventId = q.EventId,
-                Time_queue = q.Time_queue,
-                Status = q.Status,
-                Number = q.Number
-            }).ToList();
 
-            if(queueModels.Count() == 0)
-                return BadRequest();
-
-            return new OkObjectResult(queueModels);
+            return new OkObjectResult(queue);
         }
 
 
@@ -96,6 +84,7 @@ namespace QuiQue.Controllers
         {
 
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser);
 
             Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
             if (eve is null) //чи існує івент
@@ -112,6 +101,7 @@ namespace QuiQue.Controllers
 
             //формування нового запису в чергу 
             Queue new_position = new Queue();
+            new_position.Username = user.Username;
             new_position.idUser = idUser;
             new_position.EventId = EventId;
             Queue queues1 = await _context.Queues.Where(e => e.EventId == EventId).OrderBy(e => e.Number).LastAsync();

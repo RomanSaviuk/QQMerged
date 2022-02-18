@@ -147,10 +147,11 @@ namespace QuiQue.Controllers
         private bool close(Event Event)
         {
             // чи вже закрита 
-            if (!Event.IsSuspended)
+            if (Event.IsSuspended)
                 return false;
 
             Event.IsSuspended = true;
+            _context.Update(Event);
             _context.SaveChanges();
             return true;
         }
@@ -165,10 +166,11 @@ namespace QuiQue.Controllers
         private bool open(Event Event)
         {
             // чи вже відкрита 
-            if (Event.IsSuspended)
+            if (!Event.IsSuspended)
                 return false;
 
             Event.IsSuspended = false;
+            _context.Update(Event);
             _context.SaveChanges();
             return true;
         }
@@ -205,12 +207,12 @@ namespace QuiQue.Controllers
                     else
                         return BadRequest();
                 case "finish":
-                    if (close(evnt))
+                    if (finish(evnt))
                         return new OkResult();
                     else
                         return BadRequest(":(((");
                 case "open":
-                    if (finish(evnt))
+                    if (open(evnt))
                         return new OkResult();
                     else
                         return BadRequest(":(((");
