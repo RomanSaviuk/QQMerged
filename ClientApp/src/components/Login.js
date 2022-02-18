@@ -39,6 +39,7 @@ export class Login extends Component {
         Cookies.set('Click', 0, { path: '/' });
       
         window.open("/", "_self");
+        /*sessionStorage.setItem('id', data["idUser"]);*/
     }
 
     render() {
