@@ -19,6 +19,7 @@ namespace QuiQue.Controllers
         private QuickQueueContext _context;
 
         private readonly IJWTAuthenticationManager _JWTAuthenticationManager;
+
         private readonly ITokenManager _tokenManager;
 
         public AuthController(QuickQueueContext context, ILogger<AuthController> logger, IJWTAuthenticationManager jWTAuthenticationManager, ITokenManager tokenManager)
@@ -28,6 +29,7 @@ namespace QuiQue.Controllers
             _JWTAuthenticationManager = jWTAuthenticationManager;
             _tokenManager = tokenManager;
         }
+
 
         [HttpPost("/Login")]
         public async Task<IActionResult> Authenticate([FromBody] UserCredentials userCred)
@@ -44,10 +46,10 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> Register(User user)
         {
             bool registration_result = await _JWTAuthenticationManager.Registration(user);
+
             if (!registration_result) // пошта зайнята іншим користувачем?
-            {
                 return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
-            }
+
             return new OkObjectResult(user);
         }
         	

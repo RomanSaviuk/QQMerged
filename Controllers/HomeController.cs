@@ -40,8 +40,10 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> GetUser()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             User user = await _context.Users.FirstOrDefaultAsync(e => e.idUser == idUser);
             user.Password = "";
+
             return new OkObjectResult(user);
         }
 

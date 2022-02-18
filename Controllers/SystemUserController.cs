@@ -29,6 +29,8 @@ namespace QuiQue.Controllers
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
         }
+
+
         [Route("/get_queue/{queueId}")]
         [HttpGet]
         public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
@@ -47,10 +49,13 @@ namespace QuiQue.Controllers
                 Status = q.Status,
                 Number = q.Number
             }).ToList();
+
             if(queueModels.Count() == 0)
                 return BadRequest();
+
             return new OkObjectResult(queueModels);
         }
+
 
         [Route("/user/change")]
         [HttpPut]
@@ -62,6 +67,12 @@ namespace QuiQue.Controllers
             {
                 return BadRequest("Too short or too long title");
             }
+
+            if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
+            {
+                return BadRequest("Too short or too long title");
+            }
+            //повтор емейлу
             User user_before = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
             if (user_before.Email != user.Email)
             {
@@ -71,71 +82,80 @@ namespace QuiQue.Controllers
                     return BadRequest("Wrong email");
                 }
             }
-            if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
-            {
-                return BadRequest("Too short or too long title");
-            }
-            
+
             _context.Update(user);
+            await _context.SaveChangesAsync();
+
             return new OkObjectResult(user);
         }
+
 
         [Route("/queue/enter/{EventId}")]
         [HttpPost]
         public async Task<IActionResult> EnterQueue([FromRoute] Int64 EventId)
         {
-            Queue new_position = new Queue();
-            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            new_position.idUser = idUser;
-            if (await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId) is null) //чи існує івент
-            {
-                return NotFound();
-            }
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).OwnerId == idUser) // хоче записатися у свою чергу
-            {
-                return Forbid();
-            }
-            if (_context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
-            {
-                return UnprocessableEntity();
-            }
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).IsSuspended == true)
-            {
-                return NotFound("Event is suspended!");
-            }
 
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            if (await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId) is null) //чи існує івент
+                return NotFound();
+
+            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).OwnerId == idUser) // хоче записатися у свою чергу
+                return Forbid();
+
+            if (await _context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
+                return UnprocessableEntity();
+
+            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).IsSuspended == true)
+                return NotFound("Event is suspended!");
+
+            //формування нового запису в чергу 
+            Queue new_position = new Queue();
+            new_position.idUser = idUser;
             new_position.EventId = EventId;
-            List <Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
-            new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
+            Queue queues1 = await _context.Queues.Where(e => e.EventId == EventId).OrderBy(e => e.Number).LastAsync();
+            new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+            //List <Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            //new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
+
             new_position.Time_queue = DateTime.UtcNow;
             new_position.Status = "in queue";
             //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
+
             _context.Add(new_position);
             _context.SaveChanges();
             return new OkObjectResult(new_position);
         }
+
 
         [Route("/queue/delete/{EventId}")]
         [HttpDelete]
         public async Task<IActionResult> LeaveQueue([FromRoute] Int64 EventId)
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser);
             if (deleted_queue is null)
             {
                 return NotFound();
             }
+
+
             _context.Remove(deleted_queue);
             _context.SaveChanges();
             return new OkResult();
         }
+
+
         [Route("/get_my_event")]
         [HttpGet]
         public async Task<IActionResult> MyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+
             List<Event> Event = await _context.Events.Where(e => e.OwnerId == idUser).ToListAsync();
-            List<EventModel> eventModels = new List<EventModel>();
+            //List<EventModel> eventModels = new List<EventModel>();
 
             if (Event.Count() == 0)
             {
@@ -150,6 +170,8 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> NotMyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+
             List<Queue> Queue = await _context.Queues.Where(e => e.idUser == idUser).ToListAsync();
             List<Event> Event = new List<Event>();
             for (int i = 0; i < Queue.Count; i++)
@@ -168,6 +190,7 @@ namespace QuiQue.Controllers
         {
             List<Event> eventsresult = new List<Event> {};
             long Id = -1;
+
             foreach (var E in events)
             {
                 if(E.EventId != Id)
@@ -176,32 +199,36 @@ namespace QuiQue.Controllers
                 }
                 Id = E.EventId;
             }
+
             return eventsresult;
         }
         
+
         [Route("/get_my_queue")]
         [HttpGet]
         public async Task<IActionResult> MyQeueu()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             if (await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser) is null)
                 return BadRequest();
+
             var events =  await _context.Events.Join(_context.Queues,
                 e => e.EventId,
                 q => q.EventId,
                 
                 (e, q) => new { e, q }).Where(z => z.q.idUser == idUser)
-                .Select(z => new Event {
+                .Select(z => new Event
+                {
                     EventId = z.e.EventId,
                     OwnerId = z.e.OwnerId,
                     Title = z.e.Title,
                     Description = z.e.Description
-                }).OrderBy(z=> z.EventId).ToListAsync();  //
-
+                })
+                .OrderBy(z=> z.EventId).ToListAsync();  //
 
             return new OkObjectResult(fix(events));//
         }
-
     }
 }
 
