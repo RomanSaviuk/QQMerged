@@ -131,9 +131,11 @@ namespace QuiQue.Controllers
             return new OkObjectResult(evnt);
         }
         // юра
-        private Queue nextuser(Int64 eventid)
+        private Queue nextuser(Int64 eventid, Event eve)
         {
-            Queue change = _context.Queues.Where(o => o.Status != "pass" && o.EventId == eventid).OrderBy(o => o.Number).FirstOrDefault();
+            if (eve.IsSuspended)
+                return null;
+            Queue change =  _context.Queues.Where(o => o.Status != "pass" && o.EventId == eventid).OrderBy(o => o.Number).FirstOrDefault();
             // чи є користувачі в черзі для пропуску
             if (change == null)
                 return null;//"nobody is waiting on queue";
@@ -192,7 +194,7 @@ namespace QuiQue.Controllers
             switch (value)
             {
                 case "next":
-                    var resalt = nextuser(idEvent);
+                    var resalt = nextuser(idEvent, evnt);
                     if (resalt == null)
                         return BadRequest();
                     else

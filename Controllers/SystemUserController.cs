@@ -97,16 +97,17 @@ namespace QuiQue.Controllers
 
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            if (await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId) is null) //чи існує івент
+            Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
+            if (eve is null) //чи існує івент
                 return NotFound();
 
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).OwnerId == idUser) // хоче записатися у свою чергу
+            if (eve.OwnerId == idUser) // хоче записатися у свою чергу
                 return Forbid();
 
             if (await _context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
                 return UnprocessableEntity();
 
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).IsSuspended == true)
+            if (eve.IsSuspended)
                 return NotFound("Event is suspended!");
 
             //формування нового запису в чергу 
@@ -121,6 +122,10 @@ namespace QuiQue.Controllers
             new_position.Time_queue = DateTime.UtcNow;
             new_position.Status = "in queue";
             //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
+
+            // може допоможе з поясвою  однакових номерів
+            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number) != null)
+                return BadRequest();
 
             _context.Add(new_position);
             _context.SaveChanges();
