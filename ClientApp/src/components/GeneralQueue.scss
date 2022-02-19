@@ -31,6 +31,13 @@
     height: 50px;
     background-color: grey;
     margin: 10px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.copy_link_button {
+    @extend .queue_edit_button;
+    background-color: #CCCCCC;
 }
 
 .queue {

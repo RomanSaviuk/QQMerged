@@ -59,15 +59,17 @@ export class GeneralQueue extends Component {
                 headers: { 'Authorization': token }
             };
 
+
             if (this.state.qonline) {
                 const response = await fetch(`/queue/${this.state.id}/moder/close`, requestOptions);
+                if (response.ok) {
+                    this.qupdate();
+                }
             } else {
                 const response = await fetch(`/queue/${this.state.id}/moder/open`, requestOptions);
-            }
-
-            /*close/open*/
-            if (response.ok) {
-                this.qupdate();
+                if (response.ok) {
+                    this.qupdate();
+                }
             }
         }
         else {
@@ -199,8 +201,12 @@ export class GeneralQueue extends Component {
                                     {qname}
                                 </Col>
                                 <Col xs="3" className="col3_custom">
-                                    <div style={{backgroundColor: qstate ? "#82FF9D":"#CCCCCC"}} className="queue_state"></div>
-                                    <div className="queue_edit_button" onClick={this.alert}></div>
+                                    <div className="copy_link_button" onClick={this.alert} data-toggle="tooltip" data-placement="top" title="Copy queue link">
+                                    </div>
+                                    <div style={{ backgroundColor: qstate ? "#82FF9D" : "#CCCCCC" }} className="queue_state">
+                                    </div>
+                                    <div className="queue_edit_button" onClick={this.alert} data-toggle="tooltip" data-placement="top" title="Edit queue">
+                                    </div>
                                 </Col>
                             </Row>
                         </div>
