@@ -18,6 +18,7 @@ export class GeneralQueue extends Component {
 
         this.handleNext = this.handleNext.bind(this);
         this.click = this.click.bind(this);
+        this.handleFreeze = this.handleFreeze.bind(this);
     }
 
     componentDidMount() {
@@ -40,6 +41,31 @@ export class GeneralQueue extends Component {
 
             const response = await fetch(`/queue/${this.state.id}/moder/next`, requestOptions);
 
+            if (response.ok) {
+                this.qupdate();
+            }
+        }
+        else {
+            this.setState({ redirect: true });
+        }
+    }
+
+
+    async handleFreeze() {
+        if (this.state.isOdmen) {
+            const token = "Bearer " + Cookies.get('JWT');
+            const requestOptions = {
+                method: 'PUT',
+                headers: { 'Authorization': token }
+            };
+
+            if (this.state.qonline) {
+                const response = await fetch(`/queue/${this.state.id}/moder/close`, requestOptions);
+            } else {
+                const response = await fetch(`/queue/${this.state.id}/moder/open`, requestOptions);
+            }
+
+            /*close/open*/
             if (response.ok) {
                 this.qupdate();
             }
@@ -128,6 +154,7 @@ export class GeneralQueue extends Component {
         let qid = this.state.id
         let clicker = this.state.clicker
         let isOdmen = this.state.isOdmen;
+        let qstate = this.state.qonline;
 
         const Button1 = () => {
             if ( isOdmen ) {
@@ -142,8 +169,12 @@ export class GeneralQueue extends Component {
         }
 
         const Button3 = () => {
-            if ( isOdmen ) {
-                return <div className="freeze_button" onClick={this.alert}>Freeze<br />queue</div>;
+            if (isOdmen) {
+                if (qstate) {
+                    return <div className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                } else {
+                    return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                }
             } else {
                 return <div className="your_place" onClick={this.alert}>0<br />Your place</div>;
             }
@@ -163,9 +194,15 @@ export class GeneralQueue extends Component {
                 <div className="main_block">
                     <Row>
                         <div className="queue_name">
-                            {qname}
-                            <div className="queue_edit_button" onClick={this.alert}>
-                            </div>
+                            <Row style={{width:"100%"}}>
+                                <Col xs="9">
+                                    {qname}
+                                </Col>
+                                <Col xs="3" className="col3_custom">
+                                    <div style={{backgroundColor: qstate ? "#82FF9D":"#CCCCCC"}} className="queue_state"></div>
+                                    <div className="queue_edit_button" onClick={this.alert}></div>
+                                </Col>
+                            </Row>
                         </div>
                     </Row>
 
