@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using QuiQue.Models;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace QuiQue
 {
@@ -82,10 +83,18 @@ namespace QuiQue
             {
                 return false;
             }
+            /*
+            string email = new_user.Email;
+            string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                  @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                  @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+            Regex re = new Regex(strRegex);
+            if (!re.IsMatch(email))*/
+                return (false);
             new_user.Password = BCrypt.Net.BCrypt.HashPassword(new_user.Password, salt);
-            await _context.AddAsync(new_user);
-            await _context.SaveChangesAsync();
-            return true;
+                await _context.AddAsync(new_user);
+                await _context.SaveChangesAsync();
+                return true;
         }
     }
     public class UserCredentials //просто зручний клас для передавання даних користувача, хай буде
