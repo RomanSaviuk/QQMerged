@@ -55,7 +55,6 @@ namespace QuiQue.Controllers
             try
             {
                 string messageStatus = await _emailSender.SendEmailAsync(user.Email);
-                return Ok(messageStatus);
             }
             catch (Exception ex)
             {
