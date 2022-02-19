@@ -18,7 +18,7 @@ namespace QuiQue.Service
 {
    public interface IEmailSender
    {
-            Task<string> SendEmailAsync(string recipientEmail, string recipientFirstName, string Link);
+            Task<string> SendEmailAsync(string recipientEmail);
    }
     public class EmailSenderService : IEmailSender
     {
@@ -28,7 +28,7 @@ namespace QuiQue.Service
             _smtpSettings = smtpSettings.Value;
         }
 
-        public async Task<string> SendEmailAsync(string recipientEmail, string recipientFirstName, string Link)
+        public async Task<string> SendEmailAsync(string recipientEmail)
         {
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_smtpSettings.SenderEmail));

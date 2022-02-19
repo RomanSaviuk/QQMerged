@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using QuiQue.Service;
 
 namespace QuiQue.Controllers
 {
@@ -22,12 +23,14 @@ namespace QuiQue.Controllers
 
         private readonly ITokenManager _tokenManager;
 
-        public AuthController(QuickQueueContext context, ILogger<AuthController> logger, IJWTAuthenticationManager jWTAuthenticationManager, ITokenManager tokenManager)
+        IEmailSender _emailSender;
+        public AuthController(IEmailSender emailSender, QuickQueueContext context, ILogger<AuthController> logger, IJWTAuthenticationManager jWTAuthenticationManager, ITokenManager tokenManager)
         {
             _context = context;
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
             _tokenManager = tokenManager;
+            _emailSender = emailSender;
         }
 
 
@@ -49,6 +52,15 @@ namespace QuiQue.Controllers
 
             if (!registration_result) // пошта зайнята іншим користувачем?
                 return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
+            try
+            {
+                string messageStatus = await _emailSender.SendEmailAsync(user.Email);
+                return Ok(messageStatus);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
 
             return new OkObjectResult(user);
         }
