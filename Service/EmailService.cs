@@ -33,10 +33,10 @@ namespace QuiQue.Service
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_smtpSettings.SenderEmail));
             message.To.Add(MailboxAddress.Parse(recipientEmail));
-            message.Subject = "How to send email in .Net Core";
+            message.Subject = "QuickQueue";
             message.Body = new TextPart("plain")
             {
-                Text = "This is just a walkthrough in sending messages in .net core"
+                Text = "Thanks for registration on our platform"
             };
 
             var client = new SmtpClient();
