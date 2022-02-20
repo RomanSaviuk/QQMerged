@@ -30,5 +30,8 @@ namespace QuiQue.Models
         [Required]
         [DefaultValue("in queue")]
         public string Status { get; set; }
+        [Required]
+        [DefaultValue("Renamed_user")]
+        public string Username { get; set; }
     }
 }

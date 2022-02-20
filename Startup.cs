@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using QuiQue.Hubs;
+using QuiQue.Service;
+using QuiQue.Models;
 
 namespace QuiQue
 {
@@ -62,6 +64,10 @@ namespace QuiQue
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDistributedRedisCache(r => { r.Configuration = Configuration["redis:connectionString"]; });
 
+
+            // emeil
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            services.AddSingleton<IEmailSender, EmailSenderService>();
             services.AddControllers();
 
             services.AddSwaggerGen(c =>

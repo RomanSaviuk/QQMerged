@@ -17,6 +17,8 @@ namespace QuiQue.Controllers
     [Route("/queues/{queueId}/system")]
     public class SystemUserController : Controller
     {
+        private readonly int salt = 12;
+
         private readonly ILogger<SystemUserController> _logger;
 
         private QuickQueueContext _context;
@@ -29,29 +31,36 @@ namespace QuiQue.Controllers
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
         }
+
+
         [Route("/get_queue/{queueId}")]
         [HttpGet]
         public async Task<IActionResult> QueueGetUpdate([FromRoute] int queueId)
         {
-            List<Queue> queue = _context.Queues.Where(qid => qid.EventId == queueId).ToList();
+            List<Queue> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e =>e.Number).ToListAsync();
 
+            if (queue.Count() == 0)
+                return new OkObjectResult(new List<Queue>());
             // convert to view 
-            List<QueueModel> queueModels = queue.Select(q => new QueueModel
-            {
-                User = _context.Users.FirstOrDefault(u => u.idUser == q.idUser).Username,
-                idUser = q.idUser,
-                EventId = q.EventId,
-                Time_queue = q.Time_queue,
-                Status = q.Status,
-                Number = q.Number
-            }).ToList();
 
-            return new OkObjectResult(queueModels);
+            return new OkObjectResult(queue);
+        }
+
+        [Route("/get_queue_array/{queueId}")]
+        [HttpGet]
+        public async Task<IActionResult> QueueArrayGetUpdate([FromRoute] int queueId)
+        {
+            List<String> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e => e.Number).Select(e => e.Username).ToListAsync();
+
+            if (queue.Count() == 0)
+                return new OkObjectResult(new List<String>());
+            // convert to view 
+            return new OkObjectResult(queue);
         }
 
         [Route("/user/change")]
         [HttpPut]
-        public IActionResult UserChange([FromBody] User user)
+        public async Task<IActionResult> UserChange([FromBody] User user)
         {
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
@@ -59,71 +68,107 @@ namespace QuiQue.Controllers
             {
                 return BadRequest("Too short or too long title");
             }
+
             if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
             {
                 return BadRequest("Too short or too long title");
             }
-            
-            _context.Update(user);
-            return new OkObjectResult(user);
+            //повтор емейлу
+            User user_before = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
+            if (user_before.Email != user.Email)
+            {
+                User user_after = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
+                if (user_after != null)
+                {
+                    return BadRequest("Wrong email");
+                }
+            }
+
+            user_before.Email = user.Email;
+            user_before.Username = user.Username;
+            user_before.PhoneNumber = user.PhoneNumber;
+            user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
+
+            _context.Update(user_before);
+            await _context.SaveChangesAsync();
+
+            return new OkObjectResult(user_before);
         }
 
-        [Route("/queue/system/enter/{EventId}")]
-        [HttpPost]
-        public IActionResult EnterQueue([FromRoute] Int64 EventId)
-        {
-            Queue new_position = new Queue();
-            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            new_position.idUser = idUser;
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId) is null) //чи існує івент
-            {
-                return NotFound();
-            }
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).OwnerId == idUser) // хоче записатися у свою чергу
-            {
-                return Forbid();
-            }
-            if (_context.Queues.FirstOrDefault(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
-            {
-                return UnprocessableEntity();
-            }
-            if (_context.Events.FirstOrDefault(e => e.EventId == EventId).IsSuspended == true)
-            {
-                return NotFound("Event is suspended!");
-            }
 
+        [Route("/queue/enter/{EventId}")]
+        [HttpPost]
+        public async Task<IActionResult> EnterQueue([FromRoute] Int64 EventId)
+        {
+
+            Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser);
+
+            Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
+            if (eve is null) //чи існує івент
+                return NotFound();
+
+            if (eve.OwnerId == idUser) // хоче записатися у свою чергу
+                return Forbid();
+
+            if (await _context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
+                return UnprocessableEntity();
+
+            if (eve.IsSuspended)
+                return NotFound("Event is suspended!");
+
+            //формування нового запису в чергу 
+            Queue new_position = new Queue();
+            new_position.Username = user.Username;
+            new_position.idUser = idUser;
             new_position.EventId = EventId;
-            List <Queue> queues = _context.Queues.Where(e => e.EventId == EventId).ToList();
-            new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
+            Queue queues1 = await _context.Queues.Where(e => e.EventId == EventId).OrderBy(e => e.Number).LastAsync();
+            new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+            //List <Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            //new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
+
             new_position.Time_queue = DateTime.UtcNow;
             new_position.Status = "in queue";
-            new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
+            //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
+
+            // може допоможе з поясвою  однакових номерів
+            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number && e.Status != "pass") != null)
+                return BadRequest();
+
             _context.Add(new_position);
             _context.SaveChanges();
             return new OkObjectResult(new_position);
         }
 
-        [Route("/queue/system/delete/{EventId}")]
+
+        [Route("/queue/delete/{EventId}")]
         [HttpDelete]
-        public IActionResult LeaveQueue([FromRoute] Int64 EventId)
+        public async Task<IActionResult> LeaveQueue([FromRoute] Int64 EventId)
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Queue deleted_queue = _context.Queues.FirstOrDefault(q => q.EventId == EventId && q.idUser == idUser);
+
+            Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser && q.Status != "pass");
             if (deleted_queue is null)
             {
                 return NotFound();
             }
+
+
             _context.Remove(deleted_queue);
             _context.SaveChanges();
             return new OkResult();
         }
+
+
         [Route("/get_my_event")]
         [HttpGet]
         public async Task<IActionResult> MyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+
             List<Event> Event = await _context.Events.Where(e => e.OwnerId == idUser).ToListAsync();
-            List<EventModel> eventModels = new List<EventModel>();
+            //List<EventModel> eventModels = new List<EventModel>();
 
             if (Event.Count() == 0)
             {
@@ -138,6 +183,8 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> NotMyEvent()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+
             List<Queue> Queue = await _context.Queues.Where(e => e.idUser == idUser).ToListAsync();
             List<Event> Event = new List<Event>();
             for (int i = 0; i < Queue.Count; i++)
@@ -156,6 +203,7 @@ namespace QuiQue.Controllers
         {
             List<Event> eventsresult = new List<Event> {};
             long Id = -1;
+
             foreach (var E in events)
             {
                 if(E.EventId != Id)
@@ -164,32 +212,36 @@ namespace QuiQue.Controllers
                 }
                 Id = E.EventId;
             }
+
             return eventsresult;
         }
         
+
         [Route("/get_my_queue")]
         [HttpGet]
         public async Task<IActionResult> MyQeueu()
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            
+
+            if (await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser) is null)
+                return BadRequest();
+
             var events =  await _context.Events.Join(_context.Queues,
                 e => e.EventId,
                 q => q.EventId,
                 
-                (e, q) => new { e, q }
-                ).Where(z => z.q.idUser == idUser)
-                .Select(z => new Event {
+                (e, q) => new { e, q }).Where(z => z.q.idUser == idUser)
+                .Select(z => new Event
+                {
                     EventId = z.e.EventId,
                     OwnerId = z.e.OwnerId,
                     Title = z.e.Title,
                     Description = z.e.Description
-                }).OrderBy(z=> z.EventId).ToListAsync();  //
-
+                })
+                .OrderBy(z=> z.EventId).ToListAsync();  //
 
             return new OkObjectResult(fix(events));//
         }
-
     }
 }
 

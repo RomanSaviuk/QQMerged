@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using QuiQue.Service;
 
 namespace QuiQue.Controllers
 {
@@ -13,9 +14,11 @@ namespace QuiQue.Controllers
     {
         private readonly ILogger<GetQueueTestController> _logger;
 
-        public GetQueueTestController(ILogger<GetQueueTestController> logger)
+        IEmailSender _emailSender;
+        public GetQueueTestController(ILogger<GetQueueTestController> logger, IEmailSender emailSender)
         {
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -26,6 +29,14 @@ namespace QuiQue.Controllers
                 name = "User Name " + index.ToString()
             })
             .ToArray();
+        }
+        [Route("/sendEmail/{email}")]
+        [HttpGet]
+        public async Task<IActionResult> SendEmail([FromRoute] string email)
+        {
+            //string email = "yuriy.pukhta@gmail.com";
+            string messageStatus = await _emailSender.SendEmailAsync(email);
+            return Ok(messageStatus);
         }
     }
 }

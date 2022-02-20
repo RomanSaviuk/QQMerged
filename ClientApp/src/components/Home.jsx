@@ -46,7 +46,6 @@ export class Home extends Component {
         }
         else {
             console.log("unathorized");
-            /*this.props.history.push(`queue/${this.state.idQ}`);*/
             this.setState({ redirect: true });
         }
     }
@@ -68,12 +67,12 @@ export class Home extends Component {
         return (
             <Container fluid>
                 <div className="home_background"></div>
-                <Row>
+                <Row style={{flexWrap: "wrap-reverse"}}>
                     <Col sm="6">
                         <div className="input_id_block">
                             <div className="input_background_background">
                                 <div className="input_background">
-                                    <Input type="text" value={this.state.idQ} onChange={this.handleChange} placeholder="ID..."/>
+                                    <Input type="text" value={this.state.idQ} onChange={this.handleChange} placeholder="ID..." />
                                 </div>
                             </div>
 
@@ -92,7 +91,7 @@ export class Home extends Component {
                         </div>
                     </Col>
                 </Row>
-                
+
 
                 <Modal isOpen={this.state.showNfmsg} toggle={this.toggleNfmsg}>
                     <ModalFooter>
@@ -100,8 +99,6 @@ export class Home extends Component {
                         <div className="ok_button" onClick={this.toggleNfmsg}>OK</div>
                     </ModalFooter>
                 </Modal>
-
-                
             </Container>
         );
     }
