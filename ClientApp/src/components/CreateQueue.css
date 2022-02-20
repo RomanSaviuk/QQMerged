@@ -10,8 +10,16 @@ body {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    color: #4c4c4c;
 }
-
+.moreread:hover {
+    font-size: 2em;
+    position: center;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    color: #4c4c4c;
+}
 .flexbox {
     display: flex;
     align-items: center;
@@ -129,7 +137,21 @@ h1, .h1 {
 }
 
     .create_btn:hover {
+        display: block;
+        position: center;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;
+        justify-content: center;
         background-color: #EDB734;
+        height: 100%;
+        border-radius: 12px;
+        box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
         color: white;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: 100;
+        width: 100%;
+        border: solid #EDB734 10px;
     }
 

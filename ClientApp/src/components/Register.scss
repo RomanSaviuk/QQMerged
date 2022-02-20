@@ -44,7 +44,7 @@ body {
 	background-color: transparent !important;
 	box-shadow: none !important;
 	max-height: 50px;
-	font-size: 1.5em;
+	font-size: larger;
 }
 
 h1, .h1 {
@@ -58,19 +58,32 @@ h1, .h1 {
 	background-color: #EDB734;
 	margin: 15px;
 	width: 150px;
-	height: 60px;
+	height: 50px;
 	padding: 1px;
 	border-radius: 12px;
 	box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
 	color: white;
 	text-align: center;
 	font-family: 'Ropa Sans';
-	font-size: 2.1em;
+	font-size: 1.5em;
 	font-weight: 100;
 }
 .register_btn:hover {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #EDB734;
+	margin: 15px;
+	width: 150px;
+	height: 50px;
+	padding: 1px;
+	border-radius: 12px;
+	box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
 	color: white;
+	text-align: center;
+	font-family: 'Ropa Sans';
+	font-size: 1.5em;
+	font-weight: 100;
 }
 
 
