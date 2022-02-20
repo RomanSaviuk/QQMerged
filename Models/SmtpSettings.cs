@@ -13,5 +13,9 @@ namespace QuiQue.Models
         public string SenderEmail { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string PopServer { get; set; }
+        public int PopPort { get; set; }
+        public string PopUsername { get; set; }
+        public string PopPassword { get; set; }
     }
 }
