@@ -45,77 +45,59 @@ export class Login extends Component {
 
     render() {
 
-        
+        return (
+            <Container fluid>
+                <div className="mainbox">
 
+                    <Col >
+                        <div className="inputitem">
 
-            return (
-                <Container fluid>
-                    <div className="mainbox">
+                            <div className="inputbox">
 
-                        <Col >
-                            <div className="inputitem">
+                                <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="E-mail" />
+                            </div>
 
+                            <div className="inputbox">
 
-
-                                <div className="inputbox">
-
-                                    <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="E-mail" />
-                                </div>
-
-                                <div className="inputbox">
-
-                                    <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password" />
-
-                                </div>
+                                <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password" />
 
                             </div>
 
+                        </div>
 
-                        </Col>
-                        <Col >
-                            <Row className="btns">
-                                <Col sm="6" className="btn">
-                                    <label class="checkbox_container">Remember me
-                                        <input type="checkbox"/>
-                                  
-                                     
-                                            <span class="checkmark"></span>   </label>
 
-                                   
-                                </Col>
-                                <Col sm="6" className="btn">
-                                    <div >
-                                        <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
-                                    </div>
-                                </Col>
-                                {/* <Col sm="6" className="btn">
+                    </Col>
+                    <Col >
+                        <Row className="btns">
+                            <Col sm="6" style={{padding: "0.375rem 0.75rem"}}>
+                                <label class="checkbox_container">Remember me
+                                    <input type="checkbox" />
+                                    <span class="checkmark"></span>   
+                                </label>
+                            </Col>
+                            <Col sm="6" className="btn">
+                                <div >
+                                    <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
+                                </div>
+                            </Col>
+                            {/* <Col sm="6" className="btn">
                                 <div className="login_register_btn">Register now</div>
                             </Col>*/}
-                                <Col className="btn">
-                                    <div >
-                                        <a href="/forgotpass" className="forgotpass_btn" >Forgot password?</a>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Col>
-
-
-                        <p> <span class="or_box" >────────────── or ───────────────</span></p>
-
-
-                        <div className="google_btn" >
-                            Sign in with Google
+                            <Col className="btn">
+                                <div >
+                                    <a href="/forgotpass" className="forgotpass_btn" >Forgot password?</a>
                                 </div>
+                            </Col>
+                        </Row>
+                    </Col>
 
-                      
-                        
-                                
+                    <p> <span class="or_box" >────────────── or ───────────────</span></p>
 
-                            
-                      
-
+                    <div className="google_btn" >
+                        Sign in with Google
                     </div>
-                </Container>
-            );
-        }
+                </div>
+            </Container>
+        );
     }
+}

@@ -58,7 +58,7 @@ h1, .h1 {
 }
 
 
-.login_btn {
+.login_btn, .login_btn:hover, .login_btn:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,27 +74,13 @@ h1, .h1 {
     font-weight: 100;
 }
 
-    .login_btn:hover {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #EDB734;
-        height: 50px;
-        padding: 1px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
-        color: white;
+/*.login_btn:hover, .login_btn:focus-visible {
+    @extend .login_btn
+    height: 60px;
+}*/
 
-        font-size: 2.2em;
 
-        text-align: center;
-        font-family: 'Ropa Sans';
-       
-        font-weight: 100;
-
-    }
-
-.forgotpass_btn {
+.forgotpass_btn, .forgotpass_btn:hover, .forgotpass_btn:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,16 +90,7 @@ h1, .h1 {
     font-size: 1.1rem;
     font-family: 'Ropa Sans';
 }
-.forgotpass_btn:hover {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /*    height: 4em;*/
-    color: #555555;
-    text-align: center;
-    font-size: 0.8rem;
-    font-family: 'Ropa Sans';
-}
+
 .login_register_btn {
     display: flex;
     align-items: center;
@@ -180,7 +157,7 @@ bottom_box {
     cursor: pointer;
     display: block;
     align-items: center;
-    height: 4em;
+    height: 2em;
     color: #555555;
     text-align: left;
     font-size: 1.1rem;
@@ -191,13 +168,18 @@ bottom_box {
     -ms-user-select: none;
     user-select: none;
 }
-    .checkbox_container input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-        height: 0;
-        width: 0;
-    }
+
+.checkbox_container:hover input ~ .checkmark {
+    background-color: #EDB734 !important;
+}
+
+.checkbox_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
 
 .checkmark {
     position: absolute;
@@ -206,6 +188,7 @@ bottom_box {
     height: 25px;
     width: 25px;
     background-color: #eee;
+    border-radius: 5px;
 }
 
 .checkbox_container:hover input ~ .checkmark {
