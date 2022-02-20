@@ -4,13 +4,14 @@ import Cookies from 'js-cookie'
 import './Login.css';
 import { Link } from "react-router-dom";
 
+
 export class Login extends Component {
     static displayName = Login.name;
 
     constructor(props) {
         super(props);
 
-        this.state = { email: '', password:''};
+        this.state = { email: '', password: '' };
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -29,7 +30,7 @@ export class Login extends Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email: this.state.email, password: this.state.password}) 
+            body: JSON.stringify({ email: this.state.email, password: this.state.password })
         };
 
         const response = await fetch('/login', requestOptions)
@@ -37,13 +38,16 @@ export class Login extends Component {
 
         Cookies.set('JWT', token, { path: '/' });
         Cookies.set('Click', 0, { path: '/' });
-      
+
         window.open("/", "_self");
         /*sessionStorage.setItem('id', data["idUser"]);*/
     }
 
     render() {
+
         
+
+
             return (
                 <Container fluid>
                     <div className="mainbox">
@@ -51,9 +55,7 @@ export class Login extends Component {
                         <Col >
                             <div className="inputitem">
 
-                                <div  className="google_btn" >
-                                    Sign in with Google 
-                                </div>
+
 
                                 <div className="inputbox">
 
@@ -68,23 +70,28 @@ export class Login extends Component {
 
                             </div>
 
-                            
+
                         </Col>
                         <Col >
                             <Row className="btns">
                                 <Col sm="6" className="btn">
-                                    <div className="remember_btn" >Remember me
-                                        </div>
+                                    <label class="checkbox_container">Remember me
+                                        <input type="checkbox"/>
+                                  
+                                     
+                                            <span class="checkmark"></span>   </label>
+
+                                   
                                 </Col>
                                 <Col sm="6" className="btn">
-                                    <div > 
+                                    <div >
                                         <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
                                     </div>
                                 </Col>
-                                <Col sm="6" className="btn">
-                                    <div className="login_register_btn">Register now</div>
-                                </Col>
-                                <Col sm="6" className="btn">
+                                {/* <Col sm="6" className="btn">
+                                <div className="login_register_btn">Register now</div>
+                            </Col>*/}
+                                <Col className="btn">
                                     <div >
                                         <a href="/forgotpass" className="forgotpass_btn" >Forgot password?</a>
                                     </div>
@@ -92,9 +99,23 @@ export class Login extends Component {
                             </Row>
                         </Col>
 
+
+                        <p> <span class="or_box" >────────────── or ───────────────</span></p>
+
+
+                        <div className="google_btn" >
+                            Sign in with Google
+                                </div>
+
+                      
+                        
+                                
+
+                            
+                      
+
                     </div>
                 </Container>
-        );
+            );
+        }
     }
-}
-
