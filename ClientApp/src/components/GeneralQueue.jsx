@@ -5,7 +5,7 @@ import { Virtuoso } from 'react-virtuoso';
 import CustomScrollbar from "./CustomScroller";
 import "overlayscrollbars/css/OverlayScrollbars.css";
 import './GeneralQueue.scss';
-import {Link, Redirect, withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {AppContext} from './AppContext.jsx';
 
 export class GeneralQueue extends Component {
@@ -14,11 +14,13 @@ export class GeneralQueue extends Component {
     constructor(props) {
         super(props);
         this.intervalID = 0;
-        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0};
+        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0, 
+            isInQueue: false, placeInQueue: -1, userId: sessionStorage.getItem('id')};
 
         this.handleNext = this.handleNext.bind(this);
         this.click = this.click.bind(this);
         this.handleFreeze = this.handleFreeze.bind(this);
+        this.handleJoin = this.handleJoin.bind(this);
     }
 
     componentDidMount() {
@@ -102,6 +104,15 @@ export class GeneralQueue extends Component {
             const qlistresponse = await fetch(`get_queue/${this.state.id}`, qrequestOptions);
             if (qlistresponse.ok) {
                 const qlist = await qlistresponse.json();
+
+                this.setState({ placeInQueue: -1 });
+
+                for (var i = 0; i < qlist.length; i++) {
+                    if (qlist[i].idUser == this.state.userId) {
+                        this.setState({ isInQueue: true, placeInQueue: i + 1 });
+                    };
+                }
+
                 this.setState({ queue: qlist, loading: false });
             }
         }
@@ -110,44 +121,39 @@ export class GeneralQueue extends Component {
         }
     }
 
-    alert() {
-        alert('Button clicked');
-    }
-
     click() {
         this.setState({ clicker: this.state.clicker + 1 });
     }
 
 
-    async qgen() {
-        for (var i = 10; i < 100; i++) {
-            const username = "user" + i;
-            const email = username + "@gmail.com"
+    async handleJoin() {
+        if (!this.state.isOdmen) {
+            const token = "Bearer " + Cookies.get('JWT');
             const requestOptions = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(
-                    {
-                        "email": email,
-                        "username": username,
-                        "password": "11111111",
-                        "phoneNumber": "11111111"
-                    })
+                headers: { 'Authorization': token }
             };
 
-            const response1 = await fetch('/register', requestOptions)
-            const response2 = await fetch('/login', requestOptions)
-            const token = await response2.text();
-            const token2 = "Bearer " + token;
-            const requestOptions2 = {
-                method: 'POST',
-                headers: { 'Authorization': token2 }
-            };
-
-            const response3 = await fetch('/queue/enter/6', requestOptions2)
-            console.log(response3);
+            if (!this.state.isInQueue) {
+                const response = await fetch(`/queue/enter/${this.state.id}`, requestOptions);
+                if (response.ok) {
+                    this.setState({ isInQueue: true });
+                    this.qupdate();
+                }
+            } else {
+                requestOptions["method"] = 'DELETE';
+                const response = await fetch(`/queue/delete/${this.state.id}`, requestOptions);
+                if (response.ok) {
+                    this.setState({ isInQueue: false });
+                    this.qupdate();
+                }
+            }
+        }
+        else {
+            this.setState({ redirect: true });
         }
     }
+
 
     render() {
         let queue = this.state.queue
@@ -157,12 +163,18 @@ export class GeneralQueue extends Component {
         let clicker = this.state.clicker
         let isOdmen = this.state.isOdmen;
         let qstate = this.state.qonline;
+        let place = this.state.placeInQueue;
+        let inQ = this.state.isInQueue;
 
         const Button1 = () => {
-            if ( isOdmen ) {
+            if (isOdmen) {
                 return <div className="next_button" onClick={this.handleNext}>NEXT</div>;
             } else {
-                return <div className="join_button" onClick={this.alert}>JOIN</div>;
+                if (inQ) {
+                    return <div style={{backgroundColor: "#E87C64"}} className="join_button" onClick={this.handleJoin}>LEAVE</div>;
+                } else {
+                    return <div className="join_button" onClick={this.handleJoin}>JOIN</div>;
+                }
             }
         }
 
@@ -178,7 +190,7 @@ export class GeneralQueue extends Component {
                     return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
                 }
             } else {
-                return <div className="your_place" onClick={this.alert}>0<br />Your place</div>;
+                return <div className="your_place" onClick={this.alert}>You<br/>{place}</div>;
             }
         }
 
@@ -186,9 +198,20 @@ export class GeneralQueue extends Component {
             return <div className="clicker" onClick={this.click}>{clicker}<br />Click!</div>;
         }
 
-
         if (this.state.redirect) {
             return (<Redirect push to={`/`} />);
+        }
+
+        const listElement = (index) => {
+            if (index == 0) {
+                return {backgroundColor: "#82FF9D"};
+            }
+            else if (index == place-1) {
+                return {backgroundColor: "#EDB734"};
+            }
+            else {
+                return {backgroundColor: "white"};
+            }
         }
 
         return (
@@ -197,7 +220,7 @@ export class GeneralQueue extends Component {
                     <Row>
                         <div className="queue_name">
                             <Row style={{width:"100%"}}>
-                                <Col xs="9">
+                                <Col xs="9" className="queue_name_col">
                                     {qname}
                                 </Col>
                                 <Col xs="3" className="col3_custom">
@@ -219,7 +242,7 @@ export class GeneralQueue extends Component {
                                     components={{Scroller: CustomScrollbar}}
                                     className="QList"
                                     data={queue}
-                                    itemContent={(index, Queue) => <div className="QItem" style={{backgroundColor: index == 0? "#82FF9D":"white"}}>{Queue.user}</div>}
+                                    itemContent={(index, Queue) => <div className="QItem" style={listElement(index)}>{Queue.username} {Queue.idUser}</div>}
                                 />
                             </div>
                         </Col>

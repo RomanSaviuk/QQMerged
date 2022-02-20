@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row, Col} from 'reactstrap';
+import { Collapse, Container, Navbar, NavbarToggler, Row, Col} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie'
 import './NavMenu.css';
@@ -13,17 +13,27 @@ export class NavMenu extends Component {
         super(props, context);
 
         this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.collapseState = this.collapseState.bind(this);
         this.LogOut = this.LogOut.bind(this);
 
-        this.state = { collapsed: true , authorized: false, username: ""};
+        this.state = { collapsed: true , authorized: false, username: "", collapseExited: true};
     }
 
     toggleNavbar() {
         this.setState({collapsed: !this.state.collapsed});
     }
 
+    collapseState() {
+        this.setState({collapseExited: !this.state.collapseExited});
+    }
+
     componentDidMount() {
+        this.intervalID = setInterval(() => { this.update(); }, 60000);
         this.update();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalID);
     }
 
     async update() {
@@ -59,17 +69,60 @@ export class NavMenu extends Component {
 
         const renderLogauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" onClick={this.LogOut}>Log Out</NavLink>;
+                return <Link style={{ marginRight: "20px" }} onClick={this.LogOut}>Log Out</Link>;
             } else {
-                return <NavLink tag={Link} className="adaptive_width" to="/login">Log In</NavLink>;
+                return <Link style={{ marginRight: "20px" }} to="/login">Log In</Link>;
             }
         }
 
         const renderSignauntButton = () => {
             if ( authorized ) {
-                return <NavLink tag={Link} className="adaptive_width" to="/account"><div className="signup_button">{username}</div></NavLink>;
+                return <Link to="/account"><div className="signup_button">{username}</div></Link>;
             } else {
-                return <NavLink tag={Link} className="adaptive_width" to="/register"><div className="signup_button">Sign Up</div></NavLink>;
+                return <Link to="/register"><div className="signup_button">Sign Up</div></Link>;
+            }
+        }
+
+        const navMenu = () => {
+            if (!this.state.collapsed) {
+                return (
+                    <div className="navCollapsed">
+                        <Link to="/createqueue">Create Queue</Link>
+                        <Link to="/myqueues">My Queues</Link>
+                        <Link to="/about">About</Link>
+                        {renderLogauntButton()}
+                        {renderSignauntButton()}
+                    </div>
+                )
+            } else if (this.state.collapseExited) {
+                return (
+                    <div className="navNotCollapsed">
+                        <Col xs="8">
+                            <ul className="navbar-nav">
+                                <Link style={{ width: "170px" }} to="/createqueue">Create Queue</Link>
+                                <Link style={{ width: "170px" }} to="/myqueues">My Queues</Link>
+                                <Link style={{ width: "170px" }} to="/about">About</Link>
+                            </ul>
+                        </Col>
+                        <Col xs="4">
+                            <ul className="navbar-nav" style={{ justifyContent: "flex-end" }}>
+                                {renderLogauntButton()}
+                                {renderSignauntButton()}
+                            </ul>
+                        </Col>
+                    </div>
+                )
+            }
+            else {
+                return (
+                    <div className="navCollapsed">
+                        <Link to="/createqueue">Create Queue</Link>
+                        <Link to="/myqueues">My Queues</Link>
+                        <Link to="/about">About</Link>
+                        {renderLogauntButton()}
+                        {renderSignauntButton()}
+                    </div>
+                )
             }
         }
 
@@ -77,42 +130,17 @@ export class NavMenu extends Component {
             <header>
                 <Navbar className="navbar-expand-lg navbar-toggleable-md">
                     <Container fluid>
-                        <Row className="width100">
-                            <Col xs="3">
-                                <NavbarBrand>
-                                    <NavLink tag={Link} className="adaptive_width" style={{ padding: "unset" }} to="/">
-                                        <img src="/logo.svg" alt="" />
-                                    </NavLink>
-                                </NavbarBrand>
+                        <Row style={{width: "100%"}}>
+                            <Col xs="3" style={{padding: "unset"}}>
+                                <Link to="/">
+                                    <img src="/logo.svg" alt="" height="60px" />
+                                </Link>
                             </Col>
 
                             <Col xs="9">
-                                <NavbarToggler onClick={this.toggleNavbar} className="toggler_margin" />
-                                <Collapse className="navbar-nav" isOpen={!this.state.collapsed} navbar>
-                                    <Col xs="8">
-                                        <ul className="navbar-nav">
-                                            <NavItem>
-                                                <NavLink tag={Link} to="/createqueue">Create Queue</NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink tag={Link} to="/myqueues">My Queues</NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink tag={Link} to="/about">About</NavLink>
-                                            </NavItem>
-                                        </ul>
-                                    </Col>
-
-                                    <Col xs="4">
-                                        <ul className="navbar-nav justify_end">
-                                            <NavItem>
-                                                {renderLogauntButton()}
-                                            </NavItem>
-                                            <NavItem>
-                                                {renderSignauntButton()}
-                                            </NavItem>
-                                        </ul>
-                                    </Col>
+                                <NavbarToggler onClick={this.toggleNavbar} />
+                                <Collapse isOpen={!this.state.collapsed} onExited={this.collapseState} onEntering={this.collapseState} navbar>
+                                    {navMenu()}
                                 </Collapse>
                             </Col>
                         </Row>
@@ -124,5 +152,4 @@ export class NavMenu extends Component {
 }
 
 NavMenu.contextType = AppContext;
-
 export default NavMenu;
