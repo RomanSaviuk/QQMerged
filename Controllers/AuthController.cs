@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using QuiQue.Service;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace QuiQue.Controllers
 {
@@ -23,14 +25,17 @@ namespace QuiQue.Controllers
 
         private readonly ITokenManager _tokenManager;
 
-        IEmailSender _emailSender;
-        public AuthController(IEmailSender emailSender, QuickQueueContext context, ILogger<AuthController> logger, IJWTAuthenticationManager jWTAuthenticationManager, ITokenManager tokenManager)
+        private IEmailSender _emailSender;
+
+        private Tocken_Master _TockenMaster;
+        public AuthController(IEmailSender emailSender, QuickQueueContext context, ILogger<AuthController> logger, IJWTAuthenticationManager jWTAuthenticationManager, ITokenManager tokenManager, Tocken_Master TockenMaster)
         {
             _context = context;
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
             _tokenManager = tokenManager;
             _emailSender = emailSender;
+            _TockenMaster = TockenMaster;
         }
 
 
@@ -54,7 +59,7 @@ namespace QuiQue.Controllers
                 return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
             try
             {
-                string messageStatus = await _emailSender.SendEmailAsync(user.Email);
+                //string messageStatus = await _emailSender.SendEmailAsync(user.Email);
             }
             catch (Exception ex)
             {
@@ -70,6 +75,57 @@ namespace QuiQue.Controllers
             await _tokenManager.DeactivateCurrentAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("/Register/Confirm")]
+        public async Task<IActionResult> RegisterConfirm(User user)
+        {
+            //if (!await checkmodel(user)) // пошта зайнята іншим користувачем?
+            //return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
+            bool registration_result = await _JWTAuthenticationManager.Registrationconfirm(user);
+
+            if (!registration_result) // пошта зайнята іншим користувачем?
+                return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
+
+            // confirm email
+            //begin 
+            string token = _TockenMaster.CreateToken(user.Email);
+            var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { Token = token },
+                        protocol: HttpContext.Request.Scheme);
+            try
+            {
+                string messageStatus = await _emailSender.SendEmailAsync(user.Email,
+                      $"Please confirm your account by clicking this link: : <a href='{callbackUrl}'>link</a>");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+            // end 
+            return new OkObjectResult("");
+        }
+        class tokenJeson
+        {
+            public string email {get; set;}
+        }
+        [HttpPost("/Account/ConfirmEmail")]
+        public async Task<IActionResult> ConfirmRegister([FromQuery] string Token)
+        {
+            //bool registration_result = await _JWTAuthenticationManager.Registration(user);
+           
+           tokenJeson result = JsonConvert.DeserializeObject<tokenJeson>(_TockenMaster.DecodToken(Token)); ;
+
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == result.email);
+            if (user == null)
+                return BadRequest();
+
+            user.Confirm = true;
+            _context.Update(User);
+            await _context.SaveChangesAsync();
+            return new OkObjectResult($"{result.email}:)))");
         }
     }
 }

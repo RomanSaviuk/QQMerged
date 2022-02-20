@@ -16,6 +16,7 @@ namespace QuiQue
     {
         public Task<string> Authenticate(string email, string password);
         public Task<bool> Registration(User new_user);
+        public Task<bool> Registrationconfirm(User new_user);
     }
     //генерація токенів, створення користувачів
     public class JWTAuthenticationManager : IJWTAuthenticationManager
@@ -94,6 +95,42 @@ namespace QuiQue
                 await _context.AddAsync(new_user);
                 await _context.SaveChangesAsync();
                 return true;
+        }
+        public async Task<bool> Registrationconfirm(User new_user)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == new_user.Email);
+            //перевірка чи існує такий користувач
+            if (user is not null)
+            {
+                return false;
+            }
+            //наскільки нормальний в нього юзернейм, пробач Ян
+            if (new_user.Username.Length < 3 || new_user.Username.Length > 16)
+            {
+                return false;
+            }
+            //придумали нормальний пароль?
+            else if (new_user.Password.Length < 8 || new_user.Password.Length > 20)
+            {
+                return false;
+            }
+            //ввели пошту чи простий рядок? хоча "@" нічого ще не означає
+            if (!new_user.Email.Contains("@") && !new_user.Email.Contains(".") && new_user.Email.Length < 7)
+            {
+                return false;
+            }
+            /*
+            string email = new_user.Email;
+            string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+                  @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+                  @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+            Regex re = new Regex(strRegex);
+            if (!re.IsMatch(email))*/
+            new_user.Confirm = false;
+            new_user.Password = BCrypt.Net.BCrypt.HashPassword(new_user.Password, salt);
+            await _context.AddAsync(new_user);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
     public class UserCredentials //просто зручний клас для передавання даних користувача, хай буде
