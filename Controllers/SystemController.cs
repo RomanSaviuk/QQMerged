@@ -35,13 +35,14 @@ namespace QuiQue.Controllers
         [HttpPost]
         public IActionResult PostCreateEvent([FromBody] Event Event)
         {
+            // Без Title
+            if (Event.Title == null) return BadRequest();
+            
             if (Event.Title.Length > 50 || Event.Title.Length < 3)
             {
                 return BadRequest("Too short or too long title");
             }
             Event.OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            // Без Title
-            if (Event.Title == null) return BadRequest();
             // перевірити чи всі поля правильні
             _context.Add(Event);
             _context.SaveChanges();

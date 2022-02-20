@@ -230,3 +230,9 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/Properties/ServiceDependencies/local/signalr1.arm.json
+/Properties/ServiceDependencies/QuickQueue1 - Web Deploy/profile.arm.json
+/Properties/ServiceDependencies/QuickQueue1 - Web Deploy/signalr1.arm.json
+/Properties/serviceDependencies.json
+/Properties/serviceDependencies.local.json
+/Properties/serviceDependencies.QuickQueue1 - Web Deploy.json
