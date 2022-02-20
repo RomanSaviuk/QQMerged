@@ -82,10 +82,15 @@ namespace QuiQue.Controllers
                 }
             }
 
-            _context.Update(user);
+            user_before.Email = user.Email;
+            user_before.Username = user.Username;
+            user_before.PhoneNumber = user.PhoneNumber;
+            user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, 12);
+
+            _context.Update(user_before);
             await _context.SaveChangesAsync();
 
-            return new OkObjectResult(user);
+            return new OkObjectResult(user_before);
         }
 
 
