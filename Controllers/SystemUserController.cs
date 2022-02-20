@@ -17,6 +17,8 @@ namespace QuiQue.Controllers
     [Route("/queues/{queueId}/system")]
     public class SystemUserController : Controller
     {
+        private readonly int salt = 12;
+
         private readonly ILogger<SystemUserController> _logger;
 
         private QuickQueueContext _context;
@@ -85,7 +87,7 @@ namespace QuiQue.Controllers
             user_before.Email = user.Email;
             user_before.Username = user.Username;
             user_before.PhoneNumber = user.PhoneNumber;
-            user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, 12);
+            user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
 
             _context.Update(user_before);
             await _context.SaveChangesAsync();
