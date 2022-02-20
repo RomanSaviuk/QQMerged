@@ -25,12 +25,13 @@ body {
     transition: .2s;
 }
 
-.floating-button:hover {
-    background: #353535;
-    box-shadow: 0 15px 20px rgba(46, 229, 157, .4);
-    color: white;
-    transform: translateY(-2px);
-}
+    .floating-button:hover {
+        background: #353535;
+        box-shadow: 0 15px 20px rgba(46, 229, 157, .4);
+        color: white;
+        transform: translateY(-2px);
+        font-size: 14px;
+    }
 
 .problem {
     display: inline-block;

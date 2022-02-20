@@ -79,6 +79,7 @@ export class NavMenu extends Component {
             if ( authorized ) {
                 return <Link to="/account"><div className="signup_button">{username}</div></Link>;
             } else {
+
                 return <Link to="/register"><div className="signup_button">Sign Up</div></Link>;
             }
         }

@@ -67,22 +67,21 @@ export class Account extends Component {
     }
 
     async handleSubmit(event) {
-
+        const token = "Bearer " + Cookies.get('JWT');
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json', 
+                 'Authorization': token },
             body: JSON.stringify({
                 username: this.state.username, email: this.state.email, password: this.state.password,
                 phone_number: this.state.phone_number
             })
         };
 
-        const response = await fetch('/account', requestOptions)
-        const token = await response.text();
+        const response = await fetch('/user/change', requestOptions)
 
-        Cookies.set('JWT', token, { path: '/' });
-
-        window.open("/", "_self");
+        this.props.history.push(`account`);
     }
 
     render() {
