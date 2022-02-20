@@ -114,7 +114,7 @@ namespace QuiQue.Controllers
             //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
 
             // може допоможе з поясвою  однакових номерів
-            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number) != null)
+            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number && e.Status != "pass") != null)
                 return BadRequest();
 
             _context.Add(new_position);
@@ -129,7 +129,7 @@ namespace QuiQue.Controllers
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser);
+            Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser && q.Status != "pass");
             if (deleted_queue is null)
             {
                 return NotFound();
