@@ -6,87 +6,67 @@ body {
     font-size: 1rem;
 }
 
-.navbar-expand-md .navbar-nav {
+.navbar-nav {
     display: flex;
     align-items: center;
-}
-
-.navbar .container-fluid {
-    justify-content: space-around;
-}
-
-.navbar-nav {
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    justify-content: space-around !important;
+    justify-content: space-between;
 }
 
 .container-fluid {
-    padding-right: 0px;
-    padding-left: 0px;
-}
-
-.width100 {
-    width: 100%;
-}
-
-.navbar-brand img {
-    height: 60px;
-}
-
-.nav-link {
-    color: white;
-    width: 170px;
-    font-size: 20px;
-}
-
-.nav-link:hover {
-    color: white;
+    padding: 0px;
 }
 
 .navbar-toggler-icon {
     background-image: url("/public/toggler-icon.png");
 }
 
-.navbar-toggler, {
+.navbar-toggler {
     border: none;
     box-shadow: none;
     outline: none;
-}
-
-button:focus, button:focus-visible {
-    border: none;
-    box-shadow: none;
-    outline: none;
-}
-
-.toggler_margin {
-    margin-left: 90%;
+    margin-left: 85%;
     margin-top: 1%;
 }
 
-.col-3, .col-4, .col-6, .col-8, .col-9 {
-    padding-right: 10px;
-    padding-left: 10px;
-}
-
 .signup_button {
+    display: flex;
     min-width: 130px;
     height: 50px;
     text-align: center;
     background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
     border-radius: 18px;
     color: #555555;
-    padding: 10px;
     width: fit-content;
+    align-items: center;
+    justify-content: center;
 }
 
-.adaptive_width {
-    width: fit-content !important;
+.navNotCollapsed {
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
-.justify_end {
-    justify-content: end !important;
+.navCollapsed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.navCollapsed > a {
+    margin: 0px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 0px !important;
+}
+
+a, a:hover, a:focus-visible {
+    border:none;
+    outline: none;
+    color: white !important;
+    text-decoration: none;
+    background-color: transparent;
+    font-size: 20px;
 }

@@ -44,6 +44,17 @@ namespace QuiQue.Controllers
             return new OkObjectResult(queue);
         }
 
+        [Route("/get_queue_array/{queueId}")]
+        [HttpGet]
+        public async Task<IActionResult> QueueArrayGetUpdate([FromRoute] int queueId)
+        {
+            List<String> queue = await _context.Queues.Where(qid => qid.EventId == queueId && qid.Status == "in queue").OrderBy(e => e.Number).Select(e => e.Username).ToListAsync();
+
+            if (queue.Count() == 0)
+                return new OkObjectResult(new List<String>());
+            // convert to view 
+            return new OkObjectResult(queue);
+        }
 
         [Route("/user/change")]
         [HttpPut]
@@ -119,8 +130,8 @@ namespace QuiQue.Controllers
             //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
 
             // може допоможе з поясвою  однакових номерів
-            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number) != null)
-                return BadRequest();
+            /*if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number && e.Status != "pass") != null)
+                return BadRequest();*/
 
             _context.Add(new_position);
             _context.SaveChanges();
@@ -134,7 +145,7 @@ namespace QuiQue.Controllers
         {
             Int64 idUser = Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser);
+            Queue deleted_queue = await _context.Queues.FirstOrDefaultAsync(q => q.EventId == EventId && q.idUser == idUser && q.Status != "pass");
             if (deleted_queue is null)
             {
                 return NotFound();
