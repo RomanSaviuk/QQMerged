@@ -36,7 +36,6 @@ export class GeneralQueue extends Component {
 
     async getQ() {
         if (this.context["auth"]) {
-            console.log("it's working!!!!!!!!");
             const token = "Bearer " + Cookies.get('JWT');
 
             const qrequestOptions = {
@@ -53,7 +52,6 @@ export class GeneralQueue extends Component {
             const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
             if (qresponse.ok) {
                 const qdata = await qresponse.json();
-                console.log("it's working!!!!!!!!");
                 this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"], loading: false });
             }
         }
@@ -143,9 +141,7 @@ export class GeneralQueue extends Component {
                         this.setState({ isInQueue: true, placeInQueue: i + 1 });
                     };
                 }
-
-                qlist.push({eventId: -1, id: -1, idUser: -1, number: -1, status: "", time_queue: "", username: ""});
-
+                /*qlist.push({eventId: -1, id: -1, idUser: -1, number: -1, status: "", time_queue: "", username: ""});*/
                 this.setState({ queue: qlist });
             }
         }
@@ -246,9 +242,9 @@ export class GeneralQueue extends Component {
             else if (index == place - 1) {
                 return { backgroundColor: "#EDB734" };
             }
-            else if (index == qsize - 1) {
+            /*else if (index == qsize - 1) {
                 return { visibility: "hidden" };
-            }
+            }*/
             else {
                 return { backgroundColor: "white" };
             }

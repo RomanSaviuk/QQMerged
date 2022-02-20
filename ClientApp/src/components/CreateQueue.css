@@ -6,48 +6,34 @@ body {
 
 .moreread {
     font-size: 2em;
-    position: center;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     color: #4c4c4c;
 }
-.moreread:hover {
-    font-size: 2em;
-    position: center;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    color: #4c4c4c;
-}
-.flexbox {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
+
+.createQBlock {
     flex-direction: column;
-}
-
-.flexboxver {
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+    gap: 15px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.namequeue {
-    border: 10px solid #F4F4F4;
+.nameInput {
     display: flex;
-    align-items: center;
-    background: #F4F4F4;
-    border-radius: 20px;
-    height: 100%;
+    background: #CECECE;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    border-radius: 15px;
+    height: 65px;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    padding: 8px;
 }
-
 
 .wrapper.alt {
     padding: 0;
@@ -55,103 +41,72 @@ body {
     box-shadow: 0px 0px 30px rgba(2, 3, 5, .1);
 }
 
-.spotlight {
-    align-items: center;
-    display: flex;
-    width: 100%;
-    background-color: #23e6a0;
-}
-
-.spotlight1 {
-    -moz-align-items: center;
-    -webkit-align-items: center;
-    -ms-align-items: center;
-    align-items: center;
-    display: flex;
-    width: 100%;
-    background-color: #52daa9;
-}
-
-    .spotlight1 .image1 {
-        order: 3;
-        border-radius: 0;
-    }
-.spotlight .image1 img {
-    border-radius: 0;
-    width: 100%;
-}
-
-.spotlight .image {
-    order: 1;
-    border-radius: 0;
-    width: 40%;
-}
-
-    .spotlight .image img {
-        border-radius: 0;
-        width: 100%;
-    }
-
-.spotlight .content {
-    padding: 2em 4em 0.1em 4em;
-    order: 2;
-    max-width: 48em;
-    width: 60%;
-    text-align:center;
-}
-.spotlight1 .content {
-    padding: 2em 4em 0.1em 4em;
-    order: 2;
-    max-width: 48em;
-    width: 60%;
-    text-align: center;
-}
-
 
 h1, .h1 {
     font-size: 4em;
 }
 
-.btns {
-    margin: unset;
+.input_name_block {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 35%;
 }
 
 
-.create_btn {
-    display: block;
-    position: center;
+.input_name_background {
     margin-left: auto;
     margin-right: auto;
+    padding: 8px;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: #EDB734;
-    height: 100%;
-    border-radius: 12px;
+    background: #FFFFFF;
     box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
-    color: white;
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: 100;
+    border-radius: 20px;
     width: 100%;
-    border: solid #EDB734 10px;
+    height: 100%;
 }
 
-    .create_btn:hover {
-        display: block;
-        position: center;
-        margin-left: auto;
-        margin-right: auto;
-        align-items: center;
-        justify-content: center;
-        background-color: #EDB734;
-        height: 100%;
-        border-radius: 12px;
-        box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
-        color: white;
-        text-align: center;
-        font-size: 1.2em;
-        font-weight: 100;
-        width: 100%;
-        border: solid #EDB734 10px;
+.sub_button {
+    background-color: #EDB734;
+    margin: 15px;
+    width: 130px;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%);
+    border-radius: 12px;
+    color: white !important;
+    height: 45px;
+    text-align: center;
+    padding: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+}
+
+.sub_button > a {
+    color: white !important;
+}
+
+.instRow{
+
+}
+
+.instCol {
+    text-align: center;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+@media (max-width: 991.98px) {
+    .input_name_block {
+        width: 90%;
     }
 
+    .createQBlock {
+        margin-top: 80px;
+    }
+}
