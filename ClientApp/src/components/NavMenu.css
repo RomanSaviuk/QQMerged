@@ -65,7 +65,7 @@ body {
 a, a:hover, a:focus-visible {
     border:none;
     outline: none;
-    color: white !important;
+    color: white;
     text-decoration: none;
     background-color: transparent;
     font-size: 20px;
