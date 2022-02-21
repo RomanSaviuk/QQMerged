@@ -132,8 +132,8 @@ namespace QuiQue.Controllers
             //new_position.User = _context.Users.FirstOrDefault(u => u.idUser == idUser);
 
             // може допоможе з поясвою  однакових номерів
-            if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number && e.Status != "pass") != null)
-                return BadRequest();
+            /*if (await _context.Queues.FirstOrDefaultAsync(e => e.Number == queues1.Number && e.Status != "pass") != null)
+                return BadRequest();*/
 
             _context.Add(new_position);
             _context.SaveChanges();
