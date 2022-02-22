@@ -34,13 +34,20 @@ export class MyQueues extends Component {
                 headers: { 'Authorization': token }
             };
 
+            let joinedlistData = [];
+            let createdlistData = [];
+
             const joinedlistresponse = await fetch(`get_not_my_event`, qrequestOptions);
-            const joinedlist = await joinedlistresponse.json();
+            if (joinedlistresponse.ok) {
+                joinedlistData = await joinedlistresponse.json();
+            }
 
             const createdlistresponse = await fetch(`get_my_event`, qrequestOptions);
-            const createdlist = await createdlistresponse.json();
+            if (createdlistresponse.ok) {
+                createdlistData = await createdlistresponse.json();
+            }
 
-            this.setState({createdlist: createdlist, joinedlist: joinedlist, loading: false });
+            this.setState({ createdlist: createdlistData, joinedlist: joinedlistData, loading: false });
         }
         else {
             this.setState({ redirect: true });
