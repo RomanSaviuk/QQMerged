@@ -10,7 +10,7 @@ export class CreateQueue extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { title: '' , redirect: false};
+        this.state = { title: '', redirect: false, form_state: true};
         this.handleTitleCreate = this.handleTitleCreate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkAuth = this.checkAuth.bind(this);
@@ -18,6 +18,7 @@ export class CreateQueue extends Component {
 
     handleTitleCreate(event) {
         this.setState({ title: event.target.value });
+        this.setState({ form_state: true })
     }
 
     componentDidMount() {
@@ -48,9 +49,17 @@ export class CreateQueue extends Component {
             };
 
             const response = await fetch('/queue/create', requestOptions)
-            const data = await response.json();
+            if (!response.ok) {
 
-            this.props.history.push(`queue/${data.eventId}`);
+                this.setState({
+                    form_state: false
+                })
+            }
+            else {
+                const data = await response.json();
+
+                this.props.history.push(`queue/${data.eventId}`);
+            }
         }
         else {
             console.log("unathorized");
@@ -62,13 +71,16 @@ export class CreateQueue extends Component {
         if (this.state.redirect) {
             return (<Redirect push to={`/login`} />);
         }
+        let form_state = this.state.form_state;
 
+    
         return (
+
             <div className="createQBlock">
 
                 <div className="input_name_block">
-                    <div className="input_name_background">
-                        <Input type="text" value={this.state.title} onChange={this.handleTitleCreate} placeholder="Name your queue" />
+                    <div className="input_name_background" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }}>
+                        <Input type="text" value={this.state.title} onChange={this.handleTitleCreate}  placeholder="Name your queue" />
                     </div>
                     <div className="sub_button" onClick={this.handleSubmit}>
                         Create
