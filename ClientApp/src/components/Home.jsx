@@ -96,7 +96,7 @@ export class Home extends Component {
                 <Modal isOpen={this.state.showNfmsg} toggle={this.toggleNfmsg}>
                     <ModalFooter>
                         {msg}
-                        <div className="ok_button" onClick={this.toggleNfmsg}>OK</div>
+                        <div className="ok_button1" onClick={this.toggleNfmsg}>OK</div>
                     </ModalFooter>
                 </Modal>
             </Container>

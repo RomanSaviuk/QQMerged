@@ -106,16 +106,16 @@ namespace QuiQue.Controllers
 
             Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
             if (eve is null) //чи існує івент
-                return NotFound();
+                return NotFound("");
 
             if (eve.OwnerId == idUser) // хоче записатися у свою чергу
-                return Forbid();
+                return Forbid("you are admin. think about user don't take their place");
 
             if (await _context.Queues.FirstOrDefaultAsync(u => u.idUser == idUser && u.EventId == EventId && u.Status != "pass") is not null) //повторний запис?
-                return UnprocessableEntity();
+                return UnprocessableEntity("you are arlady in queue");
 
             if (eve.IsSuspended)
-                return NotFound("Event is suspended!");
+                return UnprocessableEntity("Event is suspended!");
 
             //формування нового запису в чергу 
             Queue new_position = new Queue();
