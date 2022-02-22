@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Container, Row, Col, Input } from 'reactstrap';
+import { Container, Col, Input } from 'reactstrap';
 import './Register.scss';
-import { Link } from "react-router-dom";
 
 export class Register extends Component {
     static displayName = Register.name;
@@ -30,10 +29,10 @@ export class Register extends Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({  name: this.state.name, email: this.state.email, password: this.state.password })
+            body: JSON.stringify({  username: this.state.name, email: this.state.email, password: this.state.password })
         };
 
-        const response = await fetch('/register', requestOptions)
+        const response = await fetch('/register/confirm', requestOptions)
 
         window.open("/", "_self");
     }
