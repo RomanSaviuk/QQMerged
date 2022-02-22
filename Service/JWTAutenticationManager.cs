@@ -44,6 +44,10 @@ namespace QuiQue
             {
                 return null;
             }
+            if (!user.Confirm)
+            {
+                return null;
+            }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(tokenKey);
             var tokenDescriptor = new SecurityTokenDescriptor

@@ -43,7 +43,6 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> Authenticate([FromBody] UserCredentials userCred)
         {
             var token = await _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
-
             if (token == null)
                 return Unauthorized();
 
@@ -122,6 +121,8 @@ namespace QuiQue.Controllers
             if (user == null)
                 return BadRequest();
 
+            if (user.Confirm == true)
+                return Ok("you already confirm you email");
             user.Confirm = true;
             _context.Update(User);
             await _context.SaveChangesAsync();
