@@ -84,7 +84,7 @@ namespace QuiQue.Controllers
             bool registration_result = await _JWTAuthenticationManager.Registrationconfirm(user);
 
             if (!registration_result) // пошта зайнята іншим користувачем?
-                return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
+                return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again)");
 
             // confirm email
             //begin 
