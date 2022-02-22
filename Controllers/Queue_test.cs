@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using QuiQue.Service;
 
@@ -30,5 +31,13 @@ namespace QuiQue.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet(nameof(Get1))]
+        public int Get1()
+        {
+            Response.Redirect("/");
+            return 1;
+        }
+
     }
 }
