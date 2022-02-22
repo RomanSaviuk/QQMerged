@@ -89,11 +89,10 @@ namespace QuiQue.Controllers
             // confirm email
             //begin 
             string token = _TockenMaster.CreateToken(user.Email);
-            var callbackUrl = Url.Action(
-                        "ConfirmEmail",
-                        "Account",
+            var callbackUrl = Url.Action("ConfirmEmail", "ConfirmRegister",
                         new { Token = token },
                         protocol: HttpContext.Request.Scheme);
+            Console.WriteLine(callbackUrl);
             try
             {
                 string messageStatus = await _emailSender.SendEmailAsync(user.Email,
@@ -104,13 +103,13 @@ namespace QuiQue.Controllers
                 return BadRequest(ex.Message.ToString());
             }
             // end 
-            return new OkObjectResult("");
+            return new OkObjectResult($"{callbackUrl}");
         }
         class tokenJeson
         {
             public string email {get; set;}
         }
-        [HttpPost("/Account/ConfirmEmail")]
+        [HttpGet("/ConfirmRegister/ConfirmEmail/")]
         public async Task<IActionResult> ConfirmRegister([FromQuery] string Token)
         {
             //bool registration_result = await _JWTAuthenticationManager.Registration(user);
@@ -122,10 +121,10 @@ namespace QuiQue.Controllers
                 return BadRequest();
 
             if (user.Confirm == true)
-                return Ok("you already confirm you email");
+                return Ok("you already confirm your email");
             user.Confirm = true;
-            _context.Update(User);
-            await _context.SaveChangesAsync();
+            _context.Update(user);
+            _context.SaveChanges();
             return new OkObjectResult($"{result.email}:)))");
         }
     }
