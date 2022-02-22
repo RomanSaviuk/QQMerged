@@ -45,7 +45,8 @@ namespace QuiQue.Controllers
             var token = await _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
             if (token == null)
                 return Unauthorized();
-
+            if (token == "confirm your email")
+                return BadRequest("confirm your email")
             return Ok(token);
         }
 
@@ -56,14 +57,14 @@ namespace QuiQue.Controllers
 
             if (!registration_result) // пошта зайнята іншим користувачем?
                 return new ConflictObjectResult("Wrong credentials provided! (check your email/username/password and try again");
-            try
+            /*try
             {
                 //string messageStatus = await _emailSender.SendEmailAsync(user.Email);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message.ToString());
-            }
+            }*/
 
             return new OkObjectResult(user);
         }

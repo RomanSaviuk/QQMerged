@@ -29,7 +29,7 @@
     flex-grow: 0;
     width: 50px;
     height: 50px;
-    background-color: grey;
+    
     margin: 10px;
     user-select: none;
     cursor: pointer;
@@ -37,7 +37,7 @@
 
 .copy_link_button {
     @extend .queue_edit_button;
-    background-color: #CCCCCC;
+    
 }
 
 .queue {
@@ -196,5 +196,21 @@
         width: 45px;
         height: 45px;
         margin: 5px;
+    }
+
+    .your_place {
+        font-size: 4vw;
+    }
+
+    .join_button {
+        font-size: 4vw;
+    }
+
+    .clicker {
+        font-size: 4vw;
+    }
+
+    .freeze_button {
+        font-size: 4vw;
     }
 }
