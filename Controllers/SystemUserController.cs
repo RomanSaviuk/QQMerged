@@ -105,8 +105,8 @@ namespace QuiQue.Controllers
             User user = await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser);
 
             Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
-            if (eve is null) //чи існує івент
-                return NotFound("");
+            if (eve == null) //чи існує івент
+                return NotFound("!!!");
 
             if (eve.OwnerId == idUser) // хоче записатися у свою чергу
                 return Forbid("you are admin. think about user don't take their place");
@@ -122,8 +122,15 @@ namespace QuiQue.Controllers
             new_position.Username = user.Username;
             new_position.idUser = idUser;
             new_position.EventId = EventId;
-            Queue queues1 = await _context.Queues.Where(e => e.EventId == EventId).OrderBy(e => e.Number).LastAsync();
-            new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+
+            List<Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            if (queues == null)
+                new_position.Number = 1;
+            else
+                new_position.Number = queues.Max(e => e.Number) + 1;
+            //List<Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            // new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+            //queues1
             //List <Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
             //new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
 
