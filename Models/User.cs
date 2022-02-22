@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -20,6 +21,10 @@ namespace QuiQue.Models
         [Required]
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
+        
+        [Required]
+        [DefaultValue(false)]
+        public bool Confirm { get; set; }
         //public List<Event> Events { get; set; }
         //public List<Queue> Queues { get; set; }
     }

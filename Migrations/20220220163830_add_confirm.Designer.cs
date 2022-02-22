@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuiQue;
@@ -9,9 +10,10 @@ using QuiQue;
 namespace QuiQue.Migrations
 {
     [DbContext(typeof(QuickQueueContext))]
-    partial class QuickQueueContextModelSnapshot : ModelSnapshot
+    [Migration("20220220163830_add_confirm")]
+    partial class add_confirm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,10 +116,6 @@ namespace QuiQue.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id_user")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("Confirm")
-                        .HasColumnType("boolean")
-                        .HasColumnName("confirm");
 
                     b.Property<string>("Email")
                         .IsRequired()

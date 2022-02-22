@@ -30,13 +30,5 @@ namespace QuiQue.Controllers
             })
             .ToArray();
         }
-        [Route("/sendEmail/{email}")]
-        [HttpGet]
-        public async Task<IActionResult> SendEmail([FromRoute] string email)
-        {
-            //string email = "yuriy.pukhta@gmail.com";
-            string messageStatus = await _emailSender.SendEmailAsync(email);
-            return Ok(messageStatus);
-        }
     }
 }

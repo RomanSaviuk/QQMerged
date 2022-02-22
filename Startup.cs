@@ -70,6 +70,11 @@ namespace QuiQue
             services.AddSingleton<IEmailSender, EmailSenderService>();
             services.AddControllers();
 
+            // coding 
+            services.AddSingleton<Tocken_Master>();
+
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuiQue", Version = "v1" });

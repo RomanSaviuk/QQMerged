@@ -19,7 +19,7 @@ namespace QuiQue.Service
 {
     public interface IEmailSender
     {
-        Task<string> SendEmailAsync(string recipientEmail);
+        Task<string> SendEmailAsync(string recipientEmail, string Text, string Subject = "QuickQueue");
     }
     public class EmailSenderService : IEmailSender
     {
@@ -34,8 +34,12 @@ namespace QuiQue.Service
             IsSend = true;
             Console.WriteLine("The message was sent!");
         }
-        public async Task<string> SendEmailAsync(string recipientEmail)
+        public async Task<string> SendEmailAsync(string recipientEmail, string Text, string Subject = "QuickQueue")
         {
+            if (!recipientEmail.Contains("@") && !recipientEmail.Contains(".") && recipientEmail.Length < 7)
+            {
+                return "bad Enail";
+            }
 
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_smtpSettings.SenderEmail));
@@ -43,8 +47,10 @@ namespace QuiQue.Service
             message.Subject = "QuickQueue";
             message.Body = new TextPart("plain")
             {
-                Text = "Thanks for registration on our platform"
+                Text = Text
             };
+
+
 
             var client = new SmtpClient();
             IsSend = false;
@@ -66,9 +72,8 @@ namespace QuiQue.Service
                 return "Errore : " + ex.Message.ToString();
             }
             
-            await Task.Delay(1000);
-           
-            return CheckMessage(recipientEmail).ToString();
+
+            return "Send email";//CheckMessage(recipientEmail).ToString();
         }
         private bool CheckMessage(string Email)
         {
