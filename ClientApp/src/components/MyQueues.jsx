@@ -37,7 +37,7 @@ export class MyQueues extends Component {
             let joinedlistData = [];
             let createdlistData = [];
 
-            const joinedlistresponse = await fetch(`get_not_my_event`, qrequestOptions);
+            const joinedlistresponse = await fetch(`get_my_queue`, qrequestOptions);
             if (joinedlistresponse.ok) {
                 joinedlistData = await joinedlistresponse.json();
             }
