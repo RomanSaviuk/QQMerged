@@ -31,14 +31,10 @@ export class Register extends Component {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({  name: this.state.name, email: this.state.email, password: this.state.password })
-            /*body: JSON.stringify({email: "qqq12", password: "12312"})*/
         };
 
-        const response = await fetch('/login', requestOptions)
-        const data = await response.text();
-        sessionStorage.setItem('name', this.state.name);
-        sessionStorage.setItem('token', data);
-        sessionStorage.setItem('email', this.state.email);
+        const response = await fetch('/register', requestOptions)
+
         window.open("/", "_self");
     }
 
