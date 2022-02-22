@@ -16,7 +16,7 @@ export class NavMenu extends Component {
         this.collapseState = this.collapseState.bind(this);
         this.LogOut = this.LogOut.bind(this);
 
-        this.state = { collapsed: true , authorized: false, username: "", collapseExited: true};
+        this.state = { collapsed: true , authorized: false, username: "", collapseExited: true, loading: true};
     }
 
     toggleNavbar() {
@@ -28,8 +28,8 @@ export class NavMenu extends Component {
     }
 
     componentDidMount() {
-        this.intervalID = setInterval(() => { this.update(); }, 60000);
         this.update();
+        this.intervalID = setInterval(() => { this.update(); }, 300000);
     }
 
     componentWillUnmount() {
@@ -52,9 +52,14 @@ export class NavMenu extends Component {
                 const data = await response.json();
                 sessionStorage.setItem('id', data["idUser"]);
                 this.context.toggleAuth(true);
-                this.setState({ authorized: true, username: data["username"]});
+                this.setState({ authorized: true, username: data["username"], loading: false});
+            }
+            else {
+                this.context.toggleAuth(false);
+                this.setState({ authorized: false, loading: false});
             }
         }
+        this.setState({ loading: false});
     }
 
     LogOut() {
@@ -79,8 +84,27 @@ export class NavMenu extends Component {
             if ( authorized ) {
                 return <Link to="/account"><div className="signup_button">{username}</div></Link>;
             } else {
+
                 return <Link to="/register"><div className="signup_button">Sign Up</div></Link>;
             }
+        }
+
+        if (this.state.loading) {
+            return(
+            <header>
+                <Navbar className="navbar-expand-lg navbar-toggleable-md">
+                    <Container fluid>
+                        <Row style={{width: "100%"}}>
+                            <Col xs="3" style={{padding: "unset"}}>
+                                <Link to="/">
+                                    <img src="/logo.svg" alt="" height="60px" />
+                                </Link>
+                            </Col>
+                            <Col xs="9"></Col>
+                        </Row>
+                    </Container>
+                </Navbar>
+            </header>)
         }
 
         const navMenu = () => {

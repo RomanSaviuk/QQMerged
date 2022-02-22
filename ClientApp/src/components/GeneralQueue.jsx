@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Container, Row, Col} from 'reactstrap';
+import { Container, Row, Col, Spinner} from 'reactstrap';
 import Cookies from 'js-cookie'
 import { Virtuoso } from 'react-virtuoso';
 import CustomScrollbar from "./CustomScroller";
@@ -21,14 +21,43 @@ export class GeneralQueue extends Component {
         this.click = this.click.bind(this);
         this.handleFreeze = this.handleFreeze.bind(this);
         this.handleJoin = this.handleJoin.bind(this);
+        this.getQ = this.getQ.bind(this);
     }
 
     componentDidMount() {
+        this.getQ();
+        this.qupdate();
         this.intervalID = setInterval(() => { this.qupdate(); }, 3000);
     }
 
     componentWillUnmount() {
         clearInterval(this.intervalID);
+    }
+
+    async getQ() {
+        if (this.context["auth"]) {
+            const token = "Bearer " + Cookies.get('JWT');
+
+            const qrequestOptions = {
+                method: 'GET',
+                headers: { 'Authorization': token }
+            };
+
+            const qownresp = await fetch(`IOwner/${this.state.id}`, qrequestOptions);
+            if (qownresp.ok) {
+                const qown = await qownresp.json();
+                this.setState({ isOdmen: qown });
+            }
+
+            const qresponse = await fetch(`event/${this.state.id}`, qrequestOptions);
+            if (qresponse.ok) {
+                const qdata = await qresponse.json();
+                this.setState({ qname: qdata["title"], qonline: !qdata["isSuspended"], loading: false });
+            }
+        }
+        else {
+            this.setState({ redirect: true });
+        }
     }
 
     async handleNext() {
@@ -112,8 +141,8 @@ export class GeneralQueue extends Component {
                         this.setState({ isInQueue: true, placeInQueue: i + 1 });
                     };
                 }
-
-                this.setState({ queue: qlist, loading: false });
+                /*qlist.push({eventId: -1, id: -1, idUser: -1, number: -1, status: "", time_queue: "", username: ""});*/
+                this.setState({ queue: qlist });
             }
         }
         else {
@@ -202,15 +231,22 @@ export class GeneralQueue extends Component {
             return (<Redirect push to={`/`} />);
         }
 
+        if (this.state.loading) {
+            return (<div className="spinnerDiv"><Spinner animation="border" className="spinner" /></div>);
+        }
+
         const listElement = (index) => {
             if (index == 0) {
-                return {backgroundColor: "#82FF9D"};
+                return { backgroundColor: "#82FF9D" };
             }
-            else if (index == place-1) {
-                return {backgroundColor: "#EDB734"};
+            else if (index == place - 1) {
+                return { backgroundColor: "#EDB734" };
             }
+            /*else if (index == qsize - 1) {
+                return { visibility: "hidden" };
+            }*/
             else {
-                return {backgroundColor: "white"};
+                return { backgroundColor: "white" };
             }
         }
 
@@ -242,7 +278,7 @@ export class GeneralQueue extends Component {
                                     components={{Scroller: CustomScrollbar}}
                                     className="QList"
                                     data={queue}
-                                    itemContent={(index, Queue) => <div className="QItem" style={listElement(index)}>{Queue.username} {Queue.idUser}</div>}
+                                    itemContent={(index, Queue) => <div className="QItem" style={listElement(index)}>{Queue.username}</div>}
                                 />
                             </div>
                         </Col>

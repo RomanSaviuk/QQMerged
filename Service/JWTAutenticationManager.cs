@@ -53,7 +53,7 @@ namespace QuiQue
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.NameIdentifier, user.idUser.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddDays(28),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)

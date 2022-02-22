@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Modal, ModalHeader, ModalFooter} from 'reactstrap';
 import Cookies from 'js-cookie'
-
 import { Virtuoso } from 'react-virtuoso';
 import CustomScrollbar from "./CustomScroller";
 import "overlayscrollbars/css/OverlayScrollbars.css";
 import './MyQueues.scss';
+import {Redirect} from "react-router-dom";
+import {AppContext} from './AppContext.jsx';
 
 
 export class MyQueues extends Component {
@@ -13,100 +14,146 @@ export class MyQueues extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id,
-            showContentJoined: true, showContentCreated: false
-        };
-        
+        this.state = {loading: true, showContentJoined: true, redirect: false, joinedlist:[], createdlist:[], idToDelete:-1, showNfmsg: false};
+
+        this.deleteAsk = this.deleteAsk.bind(this);
+        this.deleteUnAsk = this.deleteUnAsk.bind(this);
+        this.deleteQueue = this.deleteQueue.bind(this);
     }
+
     componentDidMount() {
         this.qupdate();
     }
 
     async qupdate() {
-        const token = "Bearer " + Cookies.get('JWT');
+        if (this.context["auth"]) {
+            const token = "Bearer " + Cookies.get('JWT');
 
-        const qrequestOptions = {
-            method: 'GET',
-            headers: { 'Authorization': token }
-        };
+            const qrequestOptions = {
+                method: 'GET',
+                headers: { 'Authorization': token }
+            };
 
-        const joinedlistresponse = await fetch(`get_not_my_event`, qrequestOptions);
-        const joinedlist = await joinedlistresponse.json();
-        this.setState({ joinedlist: joinedlist, loading: false });
+            const joinedlistresponse = await fetch(`get_not_my_event`, qrequestOptions);
+            const joinedlist = await joinedlistresponse.json();
 
+            const createdlistresponse = await fetch(`get_my_event`, qrequestOptions);
+            const createdlist = await createdlistresponse.json();
 
-        const createdlistresponse = await fetch(`get_my_event`, qrequestOptions);
-        const createdlist = await createdlistresponse.json();
-        this.setState({
-            createdlist: createdlist, loading: false });
-    }
-
-    alert(event) {
-        alert('Button clicked');
+            this.setState({createdlist: createdlist, joinedlist: joinedlist, loading: false });
+        }
+        else {
+            this.setState({ redirect: true });
+        }
     }
 
     joined() {
-        //this.setState({ showContentJoined: !this.state.showContentJoined })
-        this.setState(({ showContentCreated }) => ({ showContentCreated: false }))
-        this.setState(({ showContentJoined }) => ({ showContentJoined: true }))
-
+        this.setState({showContentJoined: true })
     }
+
     created() {
-        //this.setState({ showContentCreated: !this.state.showContentCreated })
-        this.setState(({ showContentJoined }) => ({ showContentJoined: false }))
-        this.setState(({ showContentCreated }) => ({ showContentCreated: true }) )
+        this.setState({showContentJoined: false })
+    }
+
+    openQueue(id) {
+        this.props.history.push(`queue/${id}`);
+    }
+
+    deleteAsk(id) {
+        this.setState({ showNfmsg: !this.state.showNfmsg, idToDelete:id});
+    }
+
+    deleteUnAsk() {
+        this.setState({ showNfmsg: !this.state.showNfmsg, idToDelete:-1});
+    }
+
+    async deleteQueue() {
+        const token = "Bearer " + Cookies.get('JWT');
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Authorization': token }
+        };
+
+        const response = await fetch(`/queue/${this.state.idToDelete}/moder/finish`, requestOptions);
+
+        this.setState({ showNfmsg: !this.state.showNfmsg, idToDelete:-1});
+
+        if (response.ok) {
+            this.qupdate();
+        }
+
     }
 
     render() {
         let joinedlist = this.state.joinedlist;
         let createdlist = this.state.createdlist;
+        let showJoined = this.state.showContentJoined;
+
+        if (this.state.redirect) {
+            return (<Redirect push to={`/login`} />);
+        }
+
+        const renderList = () => {
+            if (this.state.showContentJoined) {
+                return (<div className="list">
+                    <Virtuoso
+                        components={{ Scroller: CustomScrollbar }}
+                        className="EventList"
+                        data={joinedlist}
+                        itemContent={(index, Queue) => <div className="EventItem" onClick={this.openQueue.bind(this, Queue.eventId)}>{Queue.title}</div>}
+                    />
+                </div>)
+            }
+            else {
+                return (<div className="list">
+                    <Virtuoso
+                        components={{ Scroller: CustomScrollbar }}
+                        className="EventList"
+                        data={createdlist}
+                        itemContent={(index, Queue) =>
+                            <div className="EventItem">
+                                <Col xs="10" onClick={this.openQueue.bind(this, Queue.eventId)}>
+                                    {Queue.title}
+                                </Col>
+                                <Col xs="2" style={{display: "flex"}}>
+                                    <div className="trash_btn_box">
+                                        <img src="/trash-icon 1.svg" alt="" onClick={this.deleteAsk.bind(this, Queue.eventId)} />
+                                    </div>
+                                </Col>
+                            </div>}
+                    />
+                </div>)
+            }
+        }
+
         return (
             <Container fluid>
                 <div className="list_mainblock">
                     <Row>
-                        <div class="col padding-0" >
-                            <div className="switch_btn" onClick={() => this.joined()}>Joined</div>
+                        <div className="col padding-0" >
+                            <div className="switch_btn" style={{marginTop: showJoined? "1px":"5%"}} onClick={() => this.joined()}>Joined</div>
                         </div>
-                        <div class="col padding-0">
-                            <div className="switch_btn" onClick={() => this.created()}>Created</div>
-                        </div>  
-
-                    {this.state.showContentJoined ?
-                            <div className="list">
-
-                                <Virtuoso
-                                    components={{ Scroller: CustomScrollbar }}
-                                    className="EventList"
-                                    data={joinedlist}
-                                    itemContent={(index, Queue) => <div className="EventItem" >
-                                        <div className="event_edit_button" onClick={this.alert}></div> </div>}
-                                />
-                            </div> : null}
-
-                         
-                   {this.state.showContentCreated ?
-                        <div className="list">
-
-                                <Virtuoso
-                                    components={{ Scroller: CustomScrollbar }}
-                                    className="EventList"
-                                    data={createdlist}
-                                    itemContent={(index, Queue) => <div className="EventItem"> 
-                                        <div className="trash_btn_box" onClick={this.alert}>
-                                            <img src="/trash-icon 1.svg" alt="" />
-                                        </div>
-
-                                    </div>}
-                                />
-                            </div> : null}  
-                   </Row>
+                        <div className="col padding-0">
+                            <div className="switch_btn" style={{marginTop: !showJoined? "1px":"5%"}}onClick={() => this.created()}>Created</div>
+                        </div>
+                        {renderList()}
+                    </Row>
                 </div>
-                </Container>
-                 
+
+                <Modal isOpen={this.state.showNfmsg} toggle={this.deleteAsk}>
+                    <ModalHeader>
+                        Are you sure you want to delete queue?
+                    </ModalHeader>
+                    <ModalFooter>
+                        <div className="not_ok_button" onClick={this.deleteUnAsk}>Cancel</div>
+                        <div className="ok_button" onClick={this.deleteQueue}>DELETE</div>
+                    </ModalFooter>
+                </Modal>
+            </Container>
         );
     }
 }
 
+MyQueues.contextType = AppContext;
 
 

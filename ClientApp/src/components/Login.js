@@ -4,13 +4,14 @@ import Cookies from 'js-cookie'
 import './Login.css';
 import { Link } from "react-router-dom";
 
+
 export class Login extends Component {
     static displayName = Login.name;
 
     constructor(props) {
         super(props);
 
-        this.state = { email: '', password:''};
+        this.state = { email: '', password: '' };
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -29,7 +30,7 @@ export class Login extends Component {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email: this.state.email, password: this.state.password}) 
+            body: JSON.stringify({ email: this.state.email, password: this.state.password })
         };
 
         const response = await fetch('/login', requestOptions)
@@ -37,64 +38,66 @@ export class Login extends Component {
 
         Cookies.set('JWT', token, { path: '/' });
         Cookies.set('Click', 0, { path: '/' });
-      
+
         window.open("/", "_self");
         /*sessionStorage.setItem('id', data["idUser"]);*/
     }
 
     render() {
-        
-            return (
-                <Container fluid>
-                    <div className="mainbox">
 
-                        <Col >
-                            <div className="inputitem">
+        return (
+            <Container fluid>
+                <div className="mainbox">
 
-                                <div  className="google_btn" >
-                                    Sign in with Google 
-                                </div>
+                    <Col >
+                        <div className="inputitem">
 
-                                <div className="inputbox">
+                            <div className="inputbox">
 
-                                    <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="E-mail" />
-                                </div>
+                                <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="E-mail" />
+                            </div>
 
-                                <div className="inputbox">
+                            <div className="inputbox">
 
-                                    <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password" />
-
-                                </div>
+                                <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password" />
 
                             </div>
 
-                            
-                        </Col>
-                        <Col >
-                            <Row className="btns">
-                                <Col sm="6" className="btn">
-                                    <div className="remember_btn" >Remember me
-                                        </div>
-                                </Col>
-                                <Col sm="6" className="btn">
-                                    <div > 
-                                        <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
-                                    </div>
-                                </Col>
-                                <Col sm="6" className="btn">
-                                    <div className="login_register_btn">Register now</div>
-                                </Col>
-                                <Col sm="6" className="btn">
-                                    <div >
-                                        <a href="/forgotpass" className="forgotpass_btn" >Forgot password?</a>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Col>
+                        </div>
 
+
+                    </Col>
+                    <Col >
+                        <Row className="btns">
+                            <Col sm="6" style={{padding: "0.375rem 0.75rem"}}>
+                                <label class="checkbox_container">Remember me
+                                    <input type="checkbox" />
+                                    <span class="checkmark"></span>   
+                                </label>
+                            </Col>
+                            <Col sm="6" className="btn">
+                                <div >
+                                    <a className="login_btn" onClick={this.handleSubmit}>LogIn</a>
+                                </div>
+                            </Col>
+                            {/* <Col sm="6" className="btn">
+                                <div className="login_register_btn">Register now</div>
+                            </Col>*/}
+                            <Col className="btn">
+                                <div >
+                                    <a href="/forgotpass" className="forgotpass_btn" >Forgot password?</a>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Col>
+
+                    <p> <span class="or_box" >────────────── or ───────────────</span></p>
+
+                    <div className="google_btn" >
+                        Sign in with Google
                     </div>
-                </Container>
+                </div>
+            </Container>
         );
     }
 }
-

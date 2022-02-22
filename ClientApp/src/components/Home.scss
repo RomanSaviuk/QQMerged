@@ -52,6 +52,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
+    cursor: pointer;
 }
 
 .submit_button > a {
@@ -101,7 +103,6 @@ body {
 }
 
 a, a:hover {
-    color: #4C4C4C;
     text-decoration: none;
     background-color: transparent;
 }
@@ -170,4 +171,6 @@ a, a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
+    cursor: pointer;
 }
