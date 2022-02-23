@@ -45,7 +45,8 @@ namespace QuiQue.Controllers
             var token = await _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
             if (token == null)
                 return Unauthorized();
-
+            if (token == "confirm your email")
+                return BadRequest("confirm your email");
             return Ok(token);
         }
 
