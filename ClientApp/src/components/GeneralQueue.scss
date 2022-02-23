@@ -94,6 +94,10 @@
     font-size: 2vw;
 }
 
+.freeze_button > img {
+    height: 75%;
+}
+
 .clicker {
     @extend .base_button;
     background-color: white;

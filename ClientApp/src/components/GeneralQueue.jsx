@@ -214,9 +214,9 @@ export class GeneralQueue extends Component {
         const Button3 = () => {
             if (isOdmen) {
                 if (qstate) {
-                    return <div className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                    return <div className="freeze_button" onClick={this.handleFreeze}><img src="/freeze.svg" alt=""/></div>;
                 } else {
-                    return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                    return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}><img src="/freeze.svg" alt="" /></div>;
                 }
             } else {
                 if (inQ) {
