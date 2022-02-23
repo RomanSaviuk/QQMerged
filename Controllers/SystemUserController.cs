@@ -60,7 +60,7 @@ namespace QuiQue.Controllers
 
         [Route("/user/change")]
         [HttpPut]
-        public async Task<IActionResult> UserChange([FromBody] User user)
+        public async Task<IActionResult> UserChange([FromBody] UserModel user)
         {
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             User user_before = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
@@ -87,7 +87,9 @@ namespace QuiQue.Controllers
             */
             //user_before.Email = user.Email;
             user_before.Username = user.Username;
-            user_before.PhoneNumber = user.PhoneNumber;
+
+            if (user.PhoneNumber != null)
+                user_before.PhoneNumber = user.PhoneNumber;
             //user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
 
             _context.Update(user_before);
