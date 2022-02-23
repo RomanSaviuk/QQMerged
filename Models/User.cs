@@ -23,7 +23,7 @@ namespace QuiQue.Models
         public string PhoneNumber { get; set; }
         
         [Required]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool Confirm { get; set; }
         //public List<Event> Events { get; set; }
         //public List<Queue> Queues { get; set; }
