@@ -84,7 +84,7 @@ namespace QuiQue
                 return false;
             }
             //ввели пошту чи простий рядок? хоча "@" нічого ще не означає
-            if (!new_user.Email.Contains("@") && !new_user.Email.Contains(".") && new_user.Email.Length < 7)
+            if (!new_user.Email.Contains("@") || !new_user.Email.Contains(".") || new_user.Email.Length < 7)
             {
                 return false;
             }
