@@ -15,7 +15,7 @@ export class GeneralQueue extends Component {
         super(props);
         this.intervalID = 0;
         this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0, 
-            isInQueue: false, placeInQueue: -1, userId: sessionStorage.getItem('id')};
+            isInQueue: false, placeInQueue: 0, userId: sessionStorage.getItem('id')};
 
         this.handleNext = this.handleNext.bind(this);
         this.click = this.click.bind(this);
@@ -134,7 +134,7 @@ export class GeneralQueue extends Component {
             if (qlistresponse.ok) {
                 const qlist = await qlistresponse.json();
 
-                this.setState({ placeInQueue: -1 });
+                this.setState({ placeInQueue: 0 });
 
                 for (var i = 0; i < qlist.length; i++) {
                     if (qlist[i].idUser == this.state.userId) {
@@ -214,12 +214,16 @@ export class GeneralQueue extends Component {
         const Button3 = () => {
             if (isOdmen) {
                 if (qstate) {
-                    return <div className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                    return <div className="freeze_button" onClick={this.handleFreeze}><img src="/freeze.svg" alt=""/></div>;
                 } else {
-                    return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}>Freeze<br />queue</div>;
+                    return <div style={{backgroundColor: "#CCCCCC"}} className="freeze_button" onClick={this.handleFreeze}><img src="/freeze.svg" alt="" /></div>;
                 }
             } else {
-                return <div className="your_place" onClick={this.alert}>You<br/>{place}</div>;
+                if (inQ) {
+                    return <div className="your_place">You<br/>{place}</div>;
+                } else {
+                    return <div className="your_place">You</div>;
+                }
             }
         }
 
@@ -260,12 +264,14 @@ export class GeneralQueue extends Component {
                                     {qname}
                                 </Col>
                                 <Col xs="3" className="col3_custom">
-                                    <div className="copy_link_button" onClick={this.alert} data-toggle="tooltip" data-placement="top" title="Copy queue link">
+                                    <div className="copy_link_button" onClick={() => {navigator.clipboard.writeText(`${this.state.id}`)}} data-toggle="tooltip" data-placement="top" title="Copy queue link">
+                                        <img src="/link.svg" alt="" height="100%" />
                                     </div>
                                     <div style={{ backgroundColor: qstate ? "#82FF9D" : "#CCCCCC" }} className="queue_state">
                                     </div>
-                                    <div className="queue_edit_button" onClick={this.alert} data-toggle="tooltip" data-placement="top" title="Edit queue">
-                                    </div>
+                                    {/*<div className="queue_edit_button" onClick={this.alert} data-toggle="tooltip" data-placement="top" title="Edit queue">
+                                        <img src="/edit.svg" alt="" height="100%" />
+                                    </div>*/}
                                 </Col>
                             </Row>
                         </div>

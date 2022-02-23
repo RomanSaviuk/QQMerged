@@ -95,6 +95,7 @@ namespace QuiQue
                   @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
             Regex re = new Regex(strRegex);
             if (!re.IsMatch(email))*/
+            new_user.Confirm = true;
             new_user.Password = BCrypt.Net.BCrypt.HashPassword(new_user.Password, salt);
                 await _context.AddAsync(new_user);
                 await _context.SaveChangesAsync();

@@ -1,14 +1,13 @@
 ﻿import React, { Component } from 'react';
-import { Container, Row, Col, Input } from 'reactstrap';
+import { Container, Col, Input } from 'reactstrap';
 import './Register.scss';
-import { Link } from "react-router-dom";
 
 export class Register extends Component {
     static displayName = Register.name;
 
     constructor(props) {
         super(props);
-        this.state = {name: '', email: '', password: '' };
+        this.state = { name: '', email: '', password: '',form_state: true };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -17,33 +16,40 @@ export class Register extends Component {
 
     handleNameChange(event) {
         this.setState({ name: event.target.value });
+        this.setState({ form_state: true })
     }
     handleEmailChange(event) {
         this.setState({ email: event.target.value });
+        this.setState({ form_state: true })
     }
 
     handlePasswordChange(event) {
         this.setState({ password: event.target.value });
+        this.setState({ form_state: true })
     }
 
     async handleSubmit(event) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({  name: this.state.name, email: this.state.email, password: this.state.password })
-            /*body: JSON.stringify({email: "qqq12", password: "12312"})*/
+            body: JSON.stringify({ username: this.state.name, email: this.state.email, password: this.state.password })
         };
 
-        const response = await fetch('/login', requestOptions)
-        const data = await response.text();
-        sessionStorage.setItem('name', this.state.name);
-        sessionStorage.setItem('token', data);
-        sessionStorage.setItem('email', this.state.email);
-        window.open("/", "_self");
+        const response = await fetch('/register/confirm', requestOptions)
+        if (!response.ok) {
+
+            this.setState({
+                form_state: false
+            })
+        }
+        else {
+
+            window.open("/", "_self");
+        }
     }
 
     render() {
-
+        let form_state = this.state.form_state;
         return (
             <Container fluid>
                 <div className="register_block">
@@ -51,23 +57,24 @@ export class Register extends Component {
                     <Col >
                         <div className="register_iteminput">
 
-                            <div className="register_inputbox">
+                            <div className="register_inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }}>
 
                                 <Input type="text" value={this.state.name} onChange={this.handleNameChange} placeholder="Name" />
                             </div>
 
-                            <div className="register_inputbox">
+                            <div className="register_inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }}>
 
                                 <Input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="E-mail" />
                             </div>
 
-                            <div className="register_inputbox">
+                            <div className="register_inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }}>
 
                                 <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password" />
 
                             </div>
                             <div >
-                                <a href="/createqueue" className="register_btn" onClick={this.handleSubmit}>Register</a>
+                                    <div className="register_btn" onClick={this.handleSubmit}>Register
+                                    </div>
                             </div>
 
                         </div>
