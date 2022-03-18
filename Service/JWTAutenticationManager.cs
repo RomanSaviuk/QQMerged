@@ -46,7 +46,7 @@ namespace QuiQue
             }
             if (!user.Confirm)
             {
-                return null;
+                return "unconfirmed email";
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(tokenKey);
