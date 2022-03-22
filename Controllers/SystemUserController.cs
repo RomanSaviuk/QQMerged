@@ -127,7 +127,7 @@ namespace QuiQue.Controllers
             new_position.EventId = EventId;
 
             List<Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
-            if (queues == null)
+            if (queues.Count == 0)
                 new_position.Number = 1;
             else
                 new_position.Number = queues.Max(e => e.Number) + 1;
