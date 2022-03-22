@@ -14,7 +14,7 @@ export class GeneralQueue extends Component {
     constructor(props) {
         super(props);
         this.intervalID = 0;
-        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0, 
+        this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0,  clickercolor: Math.floor(Math.random() * 270) + 60,
             isInQueue: false, placeInQueue: 0, userId: sessionStorage.getItem('id')};
 
         this.handleNext = this.handleNext.bind(this);
@@ -22,6 +22,7 @@ export class GeneralQueue extends Component {
         this.handleFreeze = this.handleFreeze.bind(this);
         this.handleJoin = this.handleJoin.bind(this);
         this.getQ = this.getQ.bind(this);
+        this.click = this.click.bind(this);
     }
 
     componentDidMount() {
@@ -151,7 +152,11 @@ export class GeneralQueue extends Component {
     }
 
     click() {
-        this.setState({ clicker: this.state.clicker + 1 });
+        let color = this.state.clickercolor;
+        if (color >= 360) {
+            color = 0;
+        }
+        this.setState({ clicker: this.state.clicker + 1, clickercolor: color + 1 });
     }
 
 
@@ -194,6 +199,7 @@ export class GeneralQueue extends Component {
         let qstate = this.state.qonline;
         let place = this.state.placeInQueue;
         let inQ = this.state.isInQueue;
+        let color = this.state.clickercolor;
 
         const Button1 = () => {
             if (isOdmen) {
@@ -227,8 +233,21 @@ export class GeneralQueue extends Component {
             }
         }
 
+        const clickerColor = () => {
+            const colorStr = "hsl(" + color + ", 90%, 65%)";
+            if (clicker <= 0) {
+                return { backgroundColor: colorStr, fontSize: '3vw'};
+            } else {
+                return { backgroundColor: colorStr };
+            }
+        }
+
         const Button4 = () => {
-            return <div className="clicker" onClick={this.click}>{clicker}<br />Click!</div>;
+            if (clicker > 0) {
+                return <div className="clicker" style={clickerColor()} onClick={this.click}>{clicker}</div>;
+            } else {
+                return <div className="clicker" style={clickerColor()} onClick={this.click}>Click!</div>;
+            }
         }
 
         if (this.state.redirect) {
@@ -253,6 +272,7 @@ export class GeneralQueue extends Component {
                 return { backgroundColor: "white" };
             }
         }
+
 
         return (
             <Container fluid>
