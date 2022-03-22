@@ -235,11 +235,19 @@ export class GeneralQueue extends Component {
 
         const clickerColor = () => {
             const colorStr = "hsl(" + color + ", 90%, 65%)";
-            return { backgroundColor: colorStr };
+            if (clicker <= 0) {
+                return { backgroundColor: colorStr, fontSize: '3vw'};
+            } else {
+                return { backgroundColor: colorStr };
+            }
         }
 
         const Button4 = () => {
-            return <div className="clicker" style={clickerColor()} onClick={this.click}>{clicker}<br />Click!</div>;
+            if (clicker > 0) {
+                return <div className="clicker" style={clickerColor()} onClick={this.click}>{clicker}</div>;
+            } else {
+                return <div className="clicker" style={clickerColor()} onClick={this.click}>Click!</div>;
+            }
         }
 
         if (this.state.redirect) {
