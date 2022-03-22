@@ -43,8 +43,8 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> Authenticate([FromBody] UserCredentials userCred)
         {
             var token = await _JWTAuthenticationManager.Authenticate(userCred.Email, userCred.Password);
-            if (token == null)
-                return Unauthorized();
+            if (token == "no user email" || token == "bad password")
+                return Unauthorized(token);
             if (token == "confirm your email")
                 return BadRequest("confirm your email");
             return Ok(token);

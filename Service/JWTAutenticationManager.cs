@@ -38,11 +38,11 @@ namespace QuiQue
 
             if (user is null)
             {
-                return null;
+                return "no user email";
             }
             if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                return null;
+                return "bad password";
             }
             if (!user.Confirm)
             {
