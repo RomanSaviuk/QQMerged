@@ -131,28 +131,28 @@ namespace QuiQue.Controllers
             return new OkObjectResult(evnt);
         }
         // юра
-        private Queue nextuser(Int64 eventid, Event eve)
+        private async Task<Queue> nextuser(Int64 eventid, Event eve)
         {
             if (eve.IsSuspended)
                 return null;
-            Queue change =  _context.Queues.Where(o => o.Status != "pass" && o.EventId == eventid).OrderBy(o => o.Number).FirstOrDefault();
+            Queue change =  await _context.Queues.Where(o => o.Status != "pass" && o.EventId == eventid).OrderBy(o => o.Number).FirstOrDefaultAsync();
             // чи є користувачі в черзі для пропуску
             if (change == null)
                 return null;//"nobody is waiting on queue";
             change.Status = "pass";
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return change;//"Ok";
         }
-        private bool close(Event Event)
+        private async Task<bool> close(Event Event)
         {
             // чи вже закрита 
             if (Event.IsSuspended)
                 return false;
 
             Event.IsSuspended = true;
-            _context.Update(Event);
-            _context.SaveChanges();
+            //_context.Update(Event);
+           await _context.SaveChangesAsync();
             return true;
         }
         private bool finish(Event Event)
@@ -163,15 +163,15 @@ namespace QuiQue.Controllers
             return true;
         }
 
-        private bool open(Event Event)
+        private async Task<bool> open(Event Event)
         {
             // чи вже відкрита 
             if (!Event.IsSuspended)
                 return false;
 
             Event.IsSuspended = false;
-            _context.Update(Event);
-            _context.SaveChanges();
+            //_context.Update(Event);
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -179,11 +179,11 @@ namespace QuiQue.Controllers
         [Authorize]
         [Route("/queue/{idEvent}/moder/{value}/")]
         [HttpPut]
-        public IActionResult QueueIdModerSystemNext([FromRoute] Int64 idEvent, [FromRoute] string value)
+        public async Task<IActionResult> QueueIdModerSystemNext([FromRoute] Int64 idEvent, [FromRoute] string value)
         {
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            Event evnt = _context.Events.FirstOrDefault(c => c.EventId == idEvent);
+            Event evnt = await _context.Events.FirstOrDefaultAsync(c => c.EventId == idEvent);
             // існує такий івент 
             if (evnt == null)
             {
@@ -196,13 +196,13 @@ namespace QuiQue.Controllers
             switch (value)
             {
                 case "next":
-                    var resalt = nextuser(idEvent, evnt);
+                    var resalt = await nextuser(idEvent, evnt);
                     if (resalt == null)
                         return BadRequest();
                     else
                         return new OkObjectResult(resalt);
                 case "close":
-                    if (close(evnt))
+                    if (await close(evnt))
                         return new OkResult();
                     else
                         return BadRequest();
@@ -212,7 +212,7 @@ namespace QuiQue.Controllers
                     else
                         return BadRequest(":(((");
                 case "open":
-                    if (open(evnt))
+                    if (await open(evnt))
                         return new OkResult();
                     else
                         return BadRequest(":(((");

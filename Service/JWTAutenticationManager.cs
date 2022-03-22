@@ -46,7 +46,7 @@ namespace QuiQue
             }
             if (!user.Confirm)
             {
-                return null;
+                return "confirm your email";
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(tokenKey);
@@ -84,7 +84,7 @@ namespace QuiQue
                 return false;
             }
             //ввели пошту чи простий рядок? хоча "@" нічого ще не означає
-            if (!new_user.Email.Contains("@") && !new_user.Email.Contains(".") && new_user.Email.Length < 7)
+            if (!new_user.Email.Contains("@") || !new_user.Email.Contains(".") || new_user.Email.Length < 7)
             {
                 return false;
             }

@@ -11,7 +11,7 @@ export class Login extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { email: '', password: '', inputClass: "inputbox",form_state:true};
+        this.state = { email: '', password: '', inputClass: "inputbox", form_state:true};
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -68,12 +68,12 @@ export class Login extends Component {
 
                         <div className="inputitem">
 
-                            <div className="inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }} >
+                            <div className="inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(250 50 0)" }} >
 
                                 <Input type="text" value={this.state.email} onChange={this.handleEmailChange} onSubmit={this.handleSubmit} placeholder="E-mail" />
                             </div>
 
-                            <div className="inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(200 0 0)" }} >
+                            <div className="inputbox" style={{ boxShadow: form_state ? "0px 4px 2px rgb(0 0 0 / 35%)" : "0px 3px 3px rgb(250 50 0)" }} >
 
                                 <Input type="password" value={this.state.password} onChange={this.handlePasswordChange} onSubmit={this.handleSubmit} placeholder="Password" />
 

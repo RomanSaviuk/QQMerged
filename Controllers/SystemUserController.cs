@@ -63,18 +63,19 @@ namespace QuiQue.Controllers
         public async Task<IActionResult> UserChange([FromBody] User user)
         {
             Int64 OwnerId = System.Convert.ToInt64(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            
+            User user_before = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
+            if (user_before == null)
+                return Forbid();
             if (user.Username == null || user.Username.Length < 3 || user.Username.Length > 16)
             {
                 return BadRequest("Too short or too long title");
             }
-
+            /*
             if (user.Email == null || !user.Email.Contains("@") || !user.Email.Contains(".") || user.Email.Length < 7)
             {
                 return BadRequest("Too short or too long title");
             }
             //повтор емейлу
-            User user_before = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
             if (user_before.Email != user.Email)
             {
                 User user_after = await _context.Users.FirstOrDefaultAsync(c => c.idUser == OwnerId);
@@ -83,11 +84,11 @@ namespace QuiQue.Controllers
                     return BadRequest("Wrong email");
                 }
             }
-
-            user_before.Email = user.Email;
+            */
+            //user_before.Email = user.Email;
             user_before.Username = user.Username;
             user_before.PhoneNumber = user.PhoneNumber;
-            user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
+            //user_before.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt);
 
             _context.Update(user_before);
             await _context.SaveChangesAsync();
@@ -105,8 +106,8 @@ namespace QuiQue.Controllers
             User user = await _context.Users.FirstOrDefaultAsync(u => u.idUser == idUser);
 
             Event eve = await _context.Events.FirstOrDefaultAsync(e => e.EventId == EventId);
-            if (eve is null) //чи існує івент
-                return NotFound("");
+            if (eve == null) //чи існує івент
+                return NotFound("!!!");
 
             if (eve.OwnerId == idUser) // хоче записатися у свою чергу
                 return Forbid("you are admin. think about user don't take their place");
@@ -122,8 +123,16 @@ namespace QuiQue.Controllers
             new_position.Username = user.Username;
             new_position.idUser = idUser;
             new_position.EventId = EventId;
-            Queue queues1 = await _context.Queues.Where(e => e.EventId == EventId).OrderBy(e => e.Number).LastAsync();
-            new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+
+            List<Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            if (queues == null)
+                new_position.Number = 1;
+            else
+                new_position.Number = queues.Max(e => e.Number) + 1;
+
+            //List<Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
+            // new_position.Number = queues1 == null ? 1 : queues1.Number + 1;
+            //queues1
             //List <Queue> queues = await _context.Queues.Where(e => e.EventId == EventId).ToListAsync();
             //new_position.Number = queues.LastOrDefault() == null ? 1 : queues.Last().Number + 1;
 
