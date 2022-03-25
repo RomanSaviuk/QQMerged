@@ -129,7 +129,7 @@ namespace QuiQue.Controllers
                 };
             user.Confirm = true;
             _context.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Response.Redirect("/");
             return new OkObjectResult(":)))");
         }
