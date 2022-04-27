@@ -36,7 +36,7 @@ export class GeneralQueue extends Component {
     }
 
     async getQ() {
-        if (this.context["auth"]) {
+        if (Cookies.get('JWT') != null) {
             const token = "Bearer " + Cookies.get('JWT');
 
             const qrequestOptions = {
@@ -62,7 +62,6 @@ export class GeneralQueue extends Component {
     }
 
     async handleNext() {
-        console.log("next");
         if (this.state.isOdmen) {
 
             const token = "Bearer " + Cookies.get('JWT');
@@ -111,7 +110,7 @@ export class GeneralQueue extends Component {
 
 
     async qupdate() {
-        if (this.context["auth"]) {
+        if (Cookies.get('JWT') != null) {
             const token = "Bearer " + Cookies.get('JWT');
 
             const qrequestOptions = {

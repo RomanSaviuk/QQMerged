@@ -26,7 +26,7 @@ export class MyQueues extends Component {
     }
 
     async qupdate() {
-        if (this.context["auth"]) {
+        if (Cookies.get('JWT') != null) {
             const token = "Bearer " + Cookies.get('JWT');
 
             const qrequestOptions = {

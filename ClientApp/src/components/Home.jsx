@@ -23,7 +23,7 @@ export class Home extends Component {
     }
 
     async handleSubmit() {
-        if (this.context["auth"]){
+        if (Cookies.get('JWT') != null){
             if (this.state.idQ == "") {
             
             }
@@ -45,7 +45,6 @@ export class Home extends Component {
             }
         }
         else {
-            console.log("unathorized");
             this.setState({ redirect: true });
         }
     }

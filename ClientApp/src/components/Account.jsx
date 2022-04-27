@@ -32,7 +32,7 @@ export class Account extends Component {
     }
 
     async getUser() {
-        if (this.context["auth"]) {
+        if (Cookies.get('JWT') != null) {
 
             const token = "Bearer " + Cookies.get('JWT');
             const requestOptions = {
@@ -52,7 +52,6 @@ export class Account extends Component {
 
         }
         else {
-            console.log("unathorized");
             /*this.setState({ redirect: true });*/
         }
     }
@@ -110,10 +109,11 @@ export class Account extends Component {
 
                     </Col>
                     <Col className="btn">
-                        <br></br>      <div >
+                        <br></br>
+                        <div>
                             <a className="change_btn" onClick={this.handleSubmit}>Change</a>
-                                </div>
-                             </Col>
+                        </div>
+                    </Col>
 
                 </div>
             </Container>
