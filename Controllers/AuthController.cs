@@ -11,6 +11,7 @@ using System.Security.Claims;
 using QuiQue.Service;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using QuiQue.Models.View;
 
 namespace QuiQue.Controllers
 {
@@ -116,6 +117,54 @@ namespace QuiQue.Controllers
             //bool registration_result = await _JWTAuthenticationManager.Registration(user);
            
            tokenJeson result = JsonConvert.DeserializeObject<tokenJeson>(_TockenMaster.DecodToken(Token)); ;
+
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == result.email);
+            if (user == null)
+                return BadRequest();
+
+            if (user.Confirm == true)
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    Content = "<h1>you already confirm your email</h1>"
+                };
+            user.Confirm = true;
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            Response.Redirect("/");
+            return new OkObjectResult(":)))");
+        }
+        [HttpPost("/Forgotpusword/")]
+        public async Task<IActionResult> Forgotpusword([FromQuery] string Email)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(c => c.Email == Email);
+            if(user == null){
+                return Forbid();
+            }
+            string token = _TockenMaster.CreateToken(user.Email);
+
+            var callbackUrl = Url.Action("ConfirmPassword", "ConfirmPassword",
+                         new { Token = token },
+                         protocol: HttpContext.Request.Scheme);
+            Console.WriteLine(callbackUrl);
+            try
+            {
+                string messageStatus = await _emailSender.SendEmailAsync(user.Email,
+                      $"Please clicking this link: : <a href='{callbackUrl}'>link</a>");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+            return new OkObjectResult(":)))");
+        }
+
+        [HttpGet("/ConfirmPassword/ConfirmPassword/")]
+        public async Task<IActionResult> ConfirmPassword(pAssfrom res)
+        {
+            string Token = res.token;
+            string Password = res.Password;
+            tokenJeson result = JsonConvert.DeserializeObject<tokenJeson>(_TockenMaster.DecodToken(Token)); ;
 
             User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == result.email);
             if (user == null)
