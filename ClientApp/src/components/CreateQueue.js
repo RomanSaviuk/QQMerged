@@ -26,7 +26,7 @@ export class CreateQueue extends Component {
     }
 
     checkAuth() {
-        if (!this.context["auth"]) {
+        if (Cookies.get('JWT') == null) {
             this.setState({ redirect: true });
         } else {
             this.setState({ redirect: false });
@@ -34,7 +34,7 @@ export class CreateQueue extends Component {
     }
 
     async handleSubmit(event) {
-        if (this.context["auth"]) {
+        if (Cookies.get('JWT') != null) {
             const token = "Bearer " + Cookies.get('JWT');
 
             const requestOptions = {
@@ -62,7 +62,6 @@ export class CreateQueue extends Component {
             }
         }
         else {
-            console.log("unathorized");
             this.setState({ redirect: true });
         }
     }

@@ -37,7 +37,7 @@ export class NavMenu extends Component {
     }
 
     async update() {
-        if (Cookies.get('JWT') !== undefined) {
+        if (Cookies.get('JWT') != null) {
 
             const token = "Bearer " + Cookies.get('JWT');
 
@@ -56,6 +56,7 @@ export class NavMenu extends Component {
             }
             else {
                 this.context.toggleAuth(false);
+                Cookies.remove('JWT');
                 this.setState({ authorized: false, loading: false});
             }
         }

@@ -35,7 +35,7 @@ export class Register extends Component {
             body: JSON.stringify({ username: this.state.name, email: this.state.email, password: this.state.password })
         };
 
-        const response = await fetch('/register/confirm', requestOptions)
+        const response = await fetch('/register', requestOptions)
         if (!response.ok) {
 
             this.setState({
