@@ -50,9 +50,9 @@ namespace QuiQue.Controllers
         // отримати інформацію про івент за ID
         [Route("/event/{idEvent}")]
         [HttpGet]
-        public IActionResult GetEvent([FromRoute] Int64 idEvent)
+        public async Task<IActionResult> GetEvent([FromRoute] Int64 idEvent)
         {
-            Event Event = _context.Events.FirstOrDefault(e => e.EventId == idEvent);
+            Event Event = await _context.Events.FirstOrDefaultAsync(e => e.EventId == idEvent);
             if (Event == null)
             {
                 return NotFound();

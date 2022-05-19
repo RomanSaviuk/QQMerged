@@ -31,11 +31,11 @@ namespace QuiQue.Hubs
 			if (await _DBcontext.Events.FirstOrDefaultAsync(e => e.EventId == id) != null)
 			{
 				await Groups.AddToGroupAsync(Context.ConnectionId, queueID);
-				await Clients.All.SendAsync("MASSAGE", "WELL");
+				await Clients.All.SendAsync("MASSAGE", "You are added to Alcoholics Anonymous Group!!!");
 			}
 			else
             {
-				await Clients.All.SendAsync("MASSAGE", "BED");
+				await Clients.All.SendAsync("MASSAGE", "You are not added to Alcoholics Anonymous Group  :(");
 			}
 		}
 

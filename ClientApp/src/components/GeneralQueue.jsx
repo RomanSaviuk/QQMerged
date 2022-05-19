@@ -7,15 +7,17 @@ import "overlayscrollbars/css/OverlayScrollbars.css";
 import './GeneralQueue.scss';
 import {Redirect, withRouter} from "react-router-dom";
 import {AppContext} from './AppContext.jsx';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
+    
 export class GeneralQueue extends Component {
     static displayName = GeneralQueue.name;
 
     constructor(props) {
         super(props);
-        this.intervalID = 0;
+        //this.intervalID = 0;
         this.state = { qname: "", queue: [], qonline: true, loading: true, id: this.props.match.params.id, isOdmen: false, redirect: false, clicker: 0,  clickercolor: Math.floor(Math.random() * 270) + 60,
-            isInQueue: false, placeInQueue: 0, userId: sessionStorage.getItem('id')};
+            isInQueue: false, placeInQueue: 0, userId: sessionStorage.getItem('id'), hubConnection: null};
 
         this.handleNext = this.handleNext.bind(this);
         this.click = this.click.bind(this);
@@ -28,7 +30,40 @@ export class GeneralQueue extends Component {
     componentDidMount() {
         this.getQ();
         this.qupdate();
-        this.intervalID = setInterval(() => { this.qupdate(); }, 3000);
+        //this.intervalID = setInterval(() => { this.qupdate(); }, 3000);
+
+        this.setState({}, () => {
+            this.state.hubConnection = new HubConnectionBuilder()
+                .withUrl('https://localhost:5001/queue')
+                .withAutomaticReconnect()
+                .build();
+
+            this.state.hubConnection.start()
+                .then(result => {
+                    console.log('Connected!');
+
+                    this.state.hubConnection.on("SendqueueAll", getword =>
+                    {
+                        console.log("yes " + getword);
+                    });
+                    this.state.hubConnection.on("MASSAGE", getword =>
+                    {
+                        console.log(getword);
+                        this.state.hubConnection.on("Sendqueue", massage => {
+                            this.qupdate();
+                            console.log(massage);
+                            this.setState({ isInQueue: false });
+                        });
+                    });
+                    console.log(this.state.id.toString());
+                    this.state.hubConnection.send('NewConnectionToqueue', this.state.id.toString());
+
+
+
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        });
+        //
     }
 
     componentWillUnmount() {

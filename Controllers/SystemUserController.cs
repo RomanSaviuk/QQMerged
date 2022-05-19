@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using QuiQue.Models.View;
 using Microsoft.EntityFrameworkCore;
+using QuiQue.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace QuiQue.Controllers
 {
@@ -25,11 +27,14 @@ namespace QuiQue.Controllers
 
         private readonly IJWTAuthenticationManager _JWTAuthenticationManager;
 
-        public SystemUserController(QuickQueueContext context, ILogger<SystemUserController> logger, IJWTAuthenticationManager jWTAuthenticationManager)
+        private readonly IHubContext<QueueHub> _queueHub;
+
+        public SystemUserController(QuickQueueContext context, ILogger<SystemUserController> logger, IJWTAuthenticationManager jWTAuthenticationManager, IHubContext<QueueHub> queueHub)
         {
             _context = context;
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
+            _queueHub = queueHub;
         }
 
 
@@ -148,6 +153,7 @@ namespace QuiQue.Controllers
 
             _context.Add(new_position);
             _context.SaveChanges();
+            await _queueHub.Clients.Group(EventId.ToString()).SendAsync("Sendqueue", "this queue id " + EventId + " was changed");
             return new OkObjectResult(new_position);
         }
 
@@ -167,6 +173,7 @@ namespace QuiQue.Controllers
 
             _context.Remove(deleted_queue);
             _context.SaveChanges();
+            await _queueHub.Clients.Group(EventId.ToString()).SendAsync("Sendqueue", "this queue id " + EventId + " was changed");
             return new OkResult();
         }
 

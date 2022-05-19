@@ -12,6 +12,8 @@ using QuiQue;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using QuiQue.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace QuiQue.Controllers
 {
@@ -23,11 +25,13 @@ namespace QuiQue.Controllers
 
         private readonly IJWTAuthenticationManager _JWTAuthenticationManager;
 
-        public SystemController(QuickQueueContext context, ILogger<SystemController> logger, IJWTAuthenticationManager jWTAuthenticationManager)
+        private readonly IHubContext<QueueHub> _queueHub;
+        public SystemController(QuickQueueContext context, ILogger<SystemController> logger, IJWTAuthenticationManager jWTAuthenticationManager, IHubContext<QueueHub> queueHub)
         {
             _context = context;
             _logger = logger;
             _JWTAuthenticationManager = jWTAuthenticationManager;
+            _queueHub = queueHub;
         }
 
 
@@ -80,7 +84,7 @@ namespace QuiQue.Controllers
             {
                 return BadRequest();
             }
-            
+            await _queueHub.Clients.Group(idEvent.ToString()).SendAsync("Sendqueue", "this queue id " + idEvent + " was changed");
             return new OkObjectResult(queue);
         }
 
@@ -128,6 +132,7 @@ namespace QuiQue.Controllers
             {
                 return BadRequest();
             }
+            await _queueHub.Clients.Group(idEvent.ToString()).SendAsync("Sendqueue", "this queue id " + idEvent + " was changed");
             return new OkObjectResult(evnt);
         }
         // юра
