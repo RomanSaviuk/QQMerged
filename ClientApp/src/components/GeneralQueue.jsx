@@ -34,7 +34,7 @@ export class GeneralQueue extends Component {
 
         this.setState({}, () => {
             this.state.hubConnection = new HubConnectionBuilder()
-                .withUrl('https://localhost:5001/queue')
+                .withUrl('/queue')
                 .withAutomaticReconnect()
                 .build();
 
@@ -54,6 +54,13 @@ export class GeneralQueue extends Component {
                             console.log(massage);
                             this.setState({ isInQueue: false });
                         });
+
+                        //////////////////////////////
+                        this.state.hubConnection.on("CLICK", massage => {
+                            console.log(parseInt(massage));
+                            this.setState({ clicker: parseInt(massage)});
+                        });
+                        //////////////////////////////
                     });
                     console.log(this.state.id.toString());
                     this.state.hubConnection.send('NewConnectionToqueue', this.state.id.toString());
@@ -190,6 +197,9 @@ export class GeneralQueue extends Component {
         if (color >= 360) {
             color = 0;
         }
+        ////////////////////////
+        this.state.hubConnection.send('updateClick', this.state.id.toString(), (this.state.clicker + 1).toString());
+        ////////////////////////
         this.setState({ clicker: this.state.clicker + 1, clickercolor: color + 1 });
     }
 

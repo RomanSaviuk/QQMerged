@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace QuiQue.Hubs
 {
-	public class QueueHub : Hub
+	public class KrabHub : Hub
 	{
 
 		private QuickQueueContext _DBcontext;
 
-		public QueueHub(QuickQueueContext context)
+		public KrabHub(QuickQueueContext context)
 		{
 			_DBcontext = context;
 		}
@@ -21,14 +21,6 @@ namespace QuiQue.Hubs
 		{
 			await Clients.Group(queueID).SendAsync("Sendqueue", "this queue id " + queueID + " was changed");
 		}
-
-		////////////////////////
-		public async Task updateClick(string queueID, string value)
-		{
-			await Clients.Group(queueID).SendAsync("CLICK", value);
-		}
-		////////////////////////
-
 		public async Task updatequeueAll(string word)
 		{
 			await Clients.All.SendAsync("SendqueueAll", "start " + word);
@@ -42,7 +34,7 @@ namespace QuiQue.Hubs
 				await Clients.All.SendAsync("MASSAGE", "You are added to Alcoholics Anonymous Group!!!");
 			}
 			else
-            {
+			{
 				await Clients.All.SendAsync("MASSAGE", "You are not added to Alcoholics Anonymous Group  :(");
 			}
 		}

@@ -52,7 +52,6 @@ export class Login extends Component {
 
 
             Cookies.set('JWT', token, { path: '/' });
-            Cookies.set('Click', 0, { path: '/' });
 
             window.open("/", "_self");
         }
